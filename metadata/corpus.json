@@ -1,0 +1,96 @@
+{
+  "name": "cs61b-java-small-v1",
+  "created": "2026-05-22",
+  "purpose": "First Java corpus for Strata experiments, using CS 61B-style topics while staying in a small loop/if/function-call subset.",
+  "source_policy": "Programs are original StrataJava examples. Public Berkeley-CS61B repositories were scraped only to choose representative topics and record source probes; code was not copied verbatim.",
+  "global_constraints": [
+    "no throw/try/catch",
+    "no recursion",
+    "no third-party imports",
+    "bounded for loops preferred",
+    "small standalone public classes"
+  ],
+  "source_repositories": [
+    {
+      "name": "Berkeley-CS61B/skeleton-fa25",
+      "url": "https://github.com/Berkeley-CS61B/skeleton-fa25",
+      "commit": "8f0895b9c3b55823cb8191fe22d6bf91a8bd8e0a",
+      "license_observation": "No top-level LICENSE/COPYING file found in quick scan."
+    },
+    {
+      "name": "Berkeley-CS61B/skeleton-sp24",
+      "url": "https://github.com/Berkeley-CS61B/skeleton-sp24",
+      "commit": "67caa5eef7f4a8402313e27476b18edf2b21d727",
+      "license_observation": "No top-level LICENSE/COPYING file found in quick scan."
+    },
+    {
+      "name": "Berkeley-CS61B/skeleton-sp21",
+      "url": "https://github.com/Berkeley-CS61B/skeleton-sp21",
+      "commit": "160747451c147c59d8e3cbf70a7afee2b73bebdb",
+      "license_observation": "No top-level LICENSE/COPYING file found in quick scan."
+    }
+  ],
+  "programs": [
+    {
+      "file": "corpus/cs61b-java/src/ArithmeticFacts.java",
+      "topic": "integer arithmetic helpers and function calls",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw01/src/Arithmetic.java",
+      "features": ["static methods", "if", "for", "int arithmetic"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/StarTriangleBounded.java",
+      "topic": "nested bounded loops for text construction",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw02/src/StarTriangleN.java",
+      "features": ["nested for", "StringBuilder", "method call"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/IndexedString.java",
+      "topic": "string indexing and reverse position arithmetic",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw02/src/PrintIndexed.java",
+      "features": ["for", "charAt", "StringBuilder", "function call"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/DoubleCharacters.java",
+      "topic": "string traversal with repeated output",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw02/src/DoubleUp.java",
+      "features": ["for", "charAt", "StringBuilder"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/ArrayMinMax.java",
+      "topic": "array scan for minimum and maximum",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw03/src/ArrayExercises.java",
+      "features": ["array access", "for", "if", "helper methods"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/EvenFilterArray.java",
+      "topic": "filtering integer sequences",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw03/src/ListExercises.java",
+      "features": ["two-pass array construction", "for", "if"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/CommonValuesArray.java",
+      "topic": "common values in two sequences",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw03/src/ListExercises.java",
+      "features": ["nested for", "if", "array output"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/OccurrenceCounts.java",
+      "topic": "counting word and character occurrences",
+      "source_probe": "Berkeley-CS61B/skeleton-fa25 hw03/src/ListExercises.java",
+      "features": ["for", "string equality", "nested bounded loops"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/BoundedCollatz.java",
+      "topic": "branch-heavy numeric transition with explicit step bound",
+      "source_probe": "Berkeley-CS61B/skeleton-sp21 lab1/Collatz.java",
+      "features": ["if", "for", "bounded iteration", "function call"]
+    },
+    {
+      "file": "corpus/cs61b-java/src/TinyUnionFind.java",
+      "topic": "array-backed disjoint-set operations without failure signaling",
+      "source_probe": "Berkeley-CS61B/skeleton-sp24 lab05/src/UnionFind.java",
+      "features": ["arrays", "for", "if", "object methods"]
+    }
+  ]
+}
+
