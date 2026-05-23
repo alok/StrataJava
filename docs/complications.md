@@ -136,3 +136,14 @@ first StrataJava corpus.
   removed. The remaining `main` methods are now commented as smoke-only
   harnesses rather than semantic targets, and `check-semantics.py` now rejects
   stale method cards that do not correspond to a real public Java method.
+- The repo is now a Lake-compatible Lean project. `lakefile.toml` pins Strata
+  as the core dependency at `349b1cf4915d3d9357b8de7edcc94d3b9a79f0b5`, and
+  `lean-toolchain` matches Strata's `leanprover/lean4:v4.29.1`.
+- `lake build` succeeded for the new project, building `StrataJava`,
+  `StrataJava.Main`, and the `stratajava` executable against the pinned Strata
+  dependency. No Lake build failure was encountered for this step.
+- `./scripts/check-lake.sh` succeeded: it loaded the Core sketch through
+  `lake exe stratajava`, parsed and typechecked it, generated 186 SMT-LIB
+  verification conditions, reported the expected no-solve summary
+  `Finished with 93 goals passed, 93 failed`, and then discharged all 186 goals
+  with `z3`.

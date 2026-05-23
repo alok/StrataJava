@@ -1,0 +1,15 @@
+name = "StrataJava"
+version = "0.1.0"
+defaultTargets = ["StrataJava", "stratajava"]
+
+[[require]]
+name = "Strata"
+git = "https://github.com/strata-org/Strata.git"
+rev = "349b1cf4915d3d9357b8de7edcc94d3b9a79f0b5"
+
+[[lean_lib]]
+name = "StrataJava"
+
+[[lean_exe]]
+name = "stratajava"
+root = "StrataJava.Main"

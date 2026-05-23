@@ -15,6 +15,15 @@ StrataJava is a small Java corpus for exercising [`strata-org/Strata`](https://r
 # Compile corpus and validate semantic-chain artifacts (requires uv)
 ./scripts/check-all.sh
 
+# Build the Lean/Lake project against the pinned Strata dependency
+lake build
+
+# Load/type-check the corpus Core sketch through the Lake executable
+lake exe stratajava
+
+# Build with Lake and stress the Strata Core target
+./scripts/check-lake.sh
+
 # Print each Java main method beside its stdout for easy comparison
 uv run scripts/check-main-output.py
 
@@ -33,8 +42,10 @@ java -cp build/classes/cs61b-java <ClassName>
 ```
 
 `check-all.sh` runs the Java compile check, `uv run scripts/check-semantics.py`,
-and the Strata Core stress check when a Strata checkout is available. Run
-`scripts/check-strata-core.sh` directly when Strata must be treated as required.
+the main-method smoke outputs in quiet mode, the Lake-native Strata check, and
+the older external-checkout Strata Core stress check when a Strata checkout is
+available. Run `scripts/check-strata-core.sh` directly when an external Strata
+checkout must be treated as required.
 
 ## Corpus Constraints
 
@@ -49,6 +60,10 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 ## Structure
 
 - `corpus/cs61b-java/src/` — the 50 standalone Java source files
+- `lakefile.toml` / `lean-toolchain` — Lake project using Strata as the pinned
+  core dependency
+- `StrataJava.lean` and `StrataJava/Main.lean` — Lean wrapper and executable
+  that drive Strata over the corpus Core sketch
 - `metadata/corpus.json` — source of truth: maps each file to its topic, CS 61B source probe (the Berkeley skeleton file that motivated it), and language features used
 - `semantics/cs61b-java/stack-semantics.json` — machine-readable chained semantics for every corpus method
 - `semantics/strata-core/cs61b-java/CoreSketch.core.st` — Strata Core / Boogie-like semantic target sketch
@@ -60,6 +75,7 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `scripts/check-main-output.py` — runs every Java `main` method and can print
   the source snippet next to stdout for inspection
 - `scripts/check-semantics.py` — semantic-chain validator
+- `scripts/check-lake.sh` — Lake-native Strata build/load/VC stress harness
 - `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
 - `scripts/check-lean-strata-boogie.sh` — stress harness for `lean/strata/boogie/CoreSketch.core.st`
 - `scripts/check-all.sh` — combined check script

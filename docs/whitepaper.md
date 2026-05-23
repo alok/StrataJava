@@ -129,6 +129,11 @@ that every method has a complete chain and a Strata Core target.
 The current implementation has:
 
 - 50 Java corpus files under `corpus/cs61b-java/src`.
+- A Lake project at `lakefile.toml` with Strata as the pinned core dependency
+  and `lean-toolchain` aligned to Strata's Lean version.
+- A small Lean library/executable pair, `StrataJava.lean` and
+  `StrataJava/Main.lean`, that exposes the canonical Core sketch path and drives
+  Strata's verifier through `lake exe stratajava`.
 - A machine-readable corpus manifest at `metadata/corpus.json`.
 - Chained semantics at `semantics/cs61b-java/stack-semantics.json`.
 - A Strata Core sketch at
@@ -139,6 +144,7 @@ The current implementation has:
 - Validation scripts:
   - `scripts/check-java-corpus.sh`
   - `scripts/check-semantics.py`
+  - `scripts/check-lake.sh`
   - `scripts/check-strata-core.sh`
   - `scripts/check-lean-strata-boogie.sh`
   - `scripts/check-all.sh`
@@ -146,9 +152,11 @@ The current implementation has:
 The validation checks that every Java file has semantics, every public
 non-`main` method has exactly one semantic card, the global chain is present and
 ordered, and every method's `strata_core` target appears in the Core sketch. The
-Strata stress harness then uses the current `lake exe strata verify` interface
-to parse, type-check, and generate verification conditions for the Core target,
-with an SMT pass when a solver is available.
+Lake-native Strata harness then builds the repo against the pinned Strata
+dependency, uses `lake exe stratajava` to parse and type-check the Core target,
+generates verification conditions, and runs an SMT pass when a solver is
+available. The older external-checkout stress harness remains available for
+cross-checking against a separate Strata checkout.
 
 For the original 10 programs, the Core sketch now goes one layer further than
 procedure names. It includes inferred abstract axioms, preconditions,
@@ -192,7 +200,8 @@ The near-term success criterion is modest but concrete:
 - The corpus compiles as Java.
 - Every corpus method has a complete semantic chain.
 - The Strata/Boogie-like target is generated or maintained in a readable form.
-- The Strata Core target parses and type-checks against the current Strata CLI.
+- The repo builds with Lake against Strata as its core dependency.
+- The Strata Core target parses and type-checks through the Lake executable.
 - The chain exposes facts that later methods can cite.
 - A human can inspect the chain and see why the target theorem/spec follows
   from the previous layer.
