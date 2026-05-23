@@ -158,6 +158,14 @@ uses the `doubledLength` contract to expose the more annoying fact that the
 computed doubled length is even, and `EvenFilterArray_evensLengthBound` stacks
 the `countEvens` bound into an output-length bound for the filtered array.
 
+The first executable-semantics pass now removes some of the earlier
+`assume result == ...` style placeholders. `max3` and `collatzNext` have Core
+function bodies, `ArithmeticFacts_maxOfThree` assigns from the concrete `max3`
+definition, and `BoundedCollatz_nextNumber` uses an actual branch on parity.
+`ArithmeticFacts_scoreViaCalls` is the first explicit call-chained target: it
+calls `sum`, `product`, and `maxOfThree`, then proves the score facts from those
+reused contracts rather than restating the arithmetic in one body.
+
 ## Example Chain
 
 For `EvenFilterArray.countEvens`:

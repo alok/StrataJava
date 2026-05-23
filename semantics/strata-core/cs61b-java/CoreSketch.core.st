@@ -13,7 +13,9 @@ type StringArray;
 type UnionFindState;
 
 function pow(base: int, exponent: int): int;
-function max3(a: int, b: int, c: int): int;
+function max3(a : int, b : int, c : int) : int {
+  if a >= b && a >= c then a else if b >= c then b else c
+}
 function strlen(s: JavaString): int;
 function starLineShape(width: int): bool;
 function triangleShape(height: int): bool;
@@ -32,7 +34,9 @@ function commonDistinctCount(left: IntArray, right: IntArray): int;
 function commonDistinctShape(left: IntArray, right: IntArray, result: IntArray): bool;
 function wordCount(words: StringArray, target: JavaString): int;
 function charCount(words: StringArray, target: int): int;
-function collatzNext(n: int): int;
+function collatzNext(n : int) : int {
+  if n % 2 == 0 then n div 2 else 3 * n + 1
+}
 function collatzIter(start: int, steps: int): int;
 function firstCollatzOneStep(start: int, maxSteps: int): int;
 function ufSize(s: UnionFindState): int;
@@ -47,9 +51,6 @@ function ufDemoState(): UnionFindState;
 // These are the first reusable facts the richer Core layer is allowed to stack.
 axiom [pow_zero]: forall base: int :: pow(base, 0) == 1;
 axiom [pow_one]: forall base: int :: pow(base, 1) == base;
-axiom [max3_contract]: forall a: int, b: int, c: int ::
-  a <= max3(a, b, c) && b <= max3(a, b, c) && c <= max3(a, b, c) &&
-  (max3(a, b, c) == a || max3(a, b, c) == b || max3(a, b, c) == c);
 axiom [strlen_nonnegative]: forall s: JavaString :: 0 <= strlen(s);
 axiom [indexed_shape_length_lower]: forall input: JavaString, output: JavaString ::
   indexedShape(input, output) ==> strlen(input) <= strlen(output);
@@ -71,11 +72,6 @@ axiom [wordCount_nonnegative]: forall words: StringArray, target: JavaString ::
   0 <= wordCount(words, target);
 axiom [charCount_nonnegative]: forall words: StringArray, target: int ::
   0 <= charCount(words, target);
-axiom [collatzNext_positive]: forall n: int :: 0 < n ==> 0 < collatzNext(n);
-axiom [collatzNext_even_def]: forall n: int ::
-  n % 2 == 0 ==> collatzNext(n) == n div 2;
-axiom [collatzNext_odd_def]: forall n: int ::
-  !(n % 2 == 0) ==> collatzNext(n) == 3 * n + 1;
 axiom [collatzStep_bounds]: forall start: int, maxSteps: int ::
   0 <= maxSteps ==> 0 <= firstCollatzOneStep(start, maxSteps) &&
   firstCollatzOneStep(start, maxSteps) <= maxSteps;
@@ -127,7 +123,7 @@ spec {
   ensures [max3_summary]: result == max3(a, b, c);
   ensures [max3_idempotent]: a == b && b == c ==> result == a;
 }
-{ assume result == max3(a, b, c); };
+{ result := max3(a, b, c); };
 
 procedure ArithmeticFacts_score(a: int, b: int, c: int, out result: int)
 spec {
@@ -135,8 +131,27 @@ spec {
   ensures [score_at_least_a_term]: result >= ((a + b) * c) + a;
   ensures [score_at_least_b_term]: result >= ((a + b) * c) + b;
   ensures [score_at_least_c_term]: result >= ((a + b) * c) + c;
+  ensures [score_all_equal]: a == b && b == c ==> result == ((a + b) * c) + a;
 }
 { result := ((a + b) * c) + max3(a, b, c); };
+
+procedure ArithmeticFacts_scoreViaCalls(a: int, b: int, c: int, out result: int)
+spec {
+  ensures [score_via_calls_summary]: result == ((a + b) * c) + max3(a, b, c);
+  ensures [score_via_calls_at_least_a_term]: result >= ((a + b) * c) + a;
+  ensures [score_via_calls_at_least_b_term]: result >= ((a + b) * c) + b;
+  ensures [score_via_calls_at_least_c_term]: result >= ((a + b) * c) + c;
+  ensures [score_via_calls_all_equal]: a == b && b == c ==> result == ((a + b) * c) + a;
+}
+{
+  var sumAB: int;
+  var product: int;
+  var biggest: int;
+  call ArithmeticFacts_sum(a, b, out sumAB);
+  call ArithmeticFacts_product(sumAB, c, out product);
+  call ArithmeticFacts_maxOfThree(a, b, c, out biggest);
+  result := product + biggest;
+};
 
 procedure StarTriangleBounded_lineOfStars_len(width: int, out resultLen: int)
 spec {
@@ -319,7 +334,13 @@ spec {
   ensures [next_summary]: result == collatzNext(n);
   ensures [next_positive]: result > 0;
 }
-{ assume result == collatzNext(n); };
+{
+  if (n % 2 == 0) {
+    result := n div 2;
+  } else {
+    result := 3 * n + 1;
+  }
+};
 
 procedure BoundedCollatz_stepsUntilOne(start: int, maxSteps: int, out result: int)
 spec {

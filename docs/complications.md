@@ -98,3 +98,19 @@ first StrataJava corpus.
   Strata built, the Core file parsed and typechecked, 202 SMT-LIB verification
   conditions were generated, and `z3` discharged all 202. No Lean/Strata/Boogie
   build failure needed logging beyond the no-solve abstract-obligation summary.
+- The first attempt to move past `assume result == ...` placeholders succeeded
+  for scalar/branching examples, not yet for arrays, strings, or union-find.
+  `max3` and `collatzNext` now have Core function bodies; `maxOfThree` and
+  `nextNumber` use executable assignment/branch bodies; and the old `max3` and
+  `collatzNext` contract axioms were removed. The local assumption/axiom line
+  count in `CoreSketch.core.st` dropped from 136 to 130.
+- `ArithmeticFacts_scoreViaCalls` is the first explicit call-chained proof
+  target: it calls `sum`, `product`, and `maxOfThree`, then proves downstream
+  score properties from the reused contracts. The Strata stress check increased
+  from 202 to 210 VCs, and `z3` discharged all 210.
+- The remaining `assume` sites are not all equal. The high-value blockers are
+  the abstract `JavaString`, `IntArray`, `StringArray`, and `UnionFindState`
+  models, which need extensional constructors/selectors or heap/state models
+  before their bodies can honestly be replaced. The generated expansion
+  procedures also still use lightweight `assume true` anchors; those stress
+  parser/typechecker/VC scale, but they are not semantic proofs yet.

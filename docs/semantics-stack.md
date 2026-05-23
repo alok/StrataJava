@@ -73,6 +73,13 @@ method bodies, and direct reading, plus a derived procedure that stacks one
 extra property on top of those contracts. The 40 expansion programs currently
 remain lightweight procedure/spec anchors until they receive the same review.
 
+The sketch now also has a first executable reuse path. `max3` and `collatzNext`
+are defined as Core functions, the corresponding procedures compute with
+assignment or branching instead of assuming their result, and
+`ArithmeticFacts_scoreViaCalls` chains three verified procedure contracts
+(`sum`, `product`, `maxOfThree`) to prove a later score relation and an
+all-inputs-equal corollary.
+
 ## How To Read The Artifacts
 
 - [semantics/cs61b-java/stack-semantics.json](/Users/alokbeniwal/StrataJava/semantics/cs61b-java/stack-semantics.json) is the
