@@ -120,3 +120,8 @@ first StrataJava corpus.
   source probes and method comments from the existing semantic cards/direct code
   reading. These comments are intent annotations only; they do not make the
   Java code itself a proof artifact.
+- Main-method smoke tests are easier to inspect now through
+  `uv run scripts/check-main-output.py`, which prints each class's `main`
+  source snippet with line numbers next to its stdout, source probe, and topic.
+  `check-all.sh` runs the same test in quiet mode so accidental runtime
+  breakage still fails the normal check without flooding the terminal.

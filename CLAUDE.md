@@ -15,6 +15,9 @@ StrataJava is a small Java corpus for exercising [`strata-org/Strata`](https://r
 # Compile corpus and validate semantic-chain artifacts (requires uv)
 ./scripts/check-all.sh
 
+# Print each Java main method beside its stdout for easy comparison
+uv run scripts/check-main-output.py
+
 # Stress the Strata Core target against a Strata checkout
 STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
 
@@ -54,6 +57,8 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `docs/whitepaper.md` — living project white paper; keep this current when project framing, goals, or evidence changes
 - `docs/complications.md` — running log of constraints and decisions made while building the corpus
 - `scripts/check-java-corpus.sh` — compile-check script
+- `scripts/check-main-output.py` — runs every Java `main` method and can print
+  the source snippet next to stdout for inspection
 - `scripts/check-semantics.py` — semantic-chain validator
 - `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
 - `scripts/check-lean-strata-boogie.sh` — stress harness for `lean/strata/boogie/CoreSketch.core.st`
