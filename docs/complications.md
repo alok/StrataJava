@@ -65,3 +65,7 @@ first StrataJava corpus.
 - Alok clarified that verbatim public CS 61B copies are acceptable for this
   project. The current v1 corpus remains original, but the source policy was
   updated so future expansion can include direct public examples if useful.
+- Nat pushed `CLAUDE.md` on the existing remote corpus branch. The local publish
+  path was reset onto that remote history before cherry-picking the chained
+  semantics work, avoiding an unrelated-history merge between the earlier
+  Git-root commit and the jj-originated remote branch.
