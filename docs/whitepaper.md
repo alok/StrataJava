@@ -143,12 +143,12 @@ The current implementation has:
   - `scripts/check-lean-strata-boogie.sh`
   - `scripts/check-all.sh`
 
-The validation checks that every Java file has semantics, every method has the
-required layers, the global chain is present and ordered, and every method's
-`strata_core` target appears in the Core sketch. The Strata stress harness then
-uses the current `lake exe strata verify` interface to parse, type-check, and
-generate verification conditions for the Core target, with an SMT pass when a
-solver is available.
+The validation checks that every Java file has semantics, every public
+non-`main` method has exactly one semantic card, the global chain is present and
+ordered, and every method's `strata_core` target appears in the Core sketch. The
+Strata stress harness then uses the current `lake exe strata verify` interface
+to parse, type-check, and generate verification conditions for the Core target,
+with an SMT pass when a solver is available.
 
 For the original 10 programs, the Core sketch now goes one layer further than
 procedure names. It includes inferred abstract axioms, preconditions,
@@ -162,9 +162,9 @@ The first executable-semantics pass now removes some of the earlier
 `assume result == ...` style placeholders. `max3` and `collatzNext` have Core
 function bodies, `ArithmeticFacts_maxOfThree` assigns from the concrete `max3`
 definition, and `BoundedCollatz_nextNumber` uses an actual branch on parity.
-`ArithmeticFacts_scoreViaCalls` is the first explicit call-chained target: it
-calls `sum`, `product`, and `maxOfThree`, then proves the score facts from those
-reused contracts rather than restating the arithmetic in one body.
+The earlier synthetic arithmetic score harness was removed from the source and
+Core target set; future call-chaining examples should come from real corpus
+methods rather than artificial score/bonus wrappers.
 
 ## Example Chain
 

@@ -125,34 +125,6 @@ spec {
 }
 { result := max3(a, b, c); };
 
-procedure ArithmeticFacts_score(a: int, b: int, c: int, out result: int)
-spec {
-  ensures [score_summary]: result == ((a + b) * c) + max3(a, b, c);
-  ensures [score_at_least_a_term]: result >= ((a + b) * c) + a;
-  ensures [score_at_least_b_term]: result >= ((a + b) * c) + b;
-  ensures [score_at_least_c_term]: result >= ((a + b) * c) + c;
-  ensures [score_all_equal]: a == b && b == c ==> result == ((a + b) * c) + a;
-}
-{ result := ((a + b) * c) + max3(a, b, c); };
-
-procedure ArithmeticFacts_scoreViaCalls(a: int, b: int, c: int, out result: int)
-spec {
-  ensures [score_via_calls_summary]: result == ((a + b) * c) + max3(a, b, c);
-  ensures [score_via_calls_at_least_a_term]: result >= ((a + b) * c) + a;
-  ensures [score_via_calls_at_least_b_term]: result >= ((a + b) * c) + b;
-  ensures [score_via_calls_at_least_c_term]: result >= ((a + b) * c) + c;
-  ensures [score_via_calls_all_equal]: a == b && b == c ==> result == ((a + b) * c) + a;
-}
-{
-  var sumAB: int;
-  var product: int;
-  var biggest: int;
-  call ArithmeticFacts_sum(a, b, out sumAB);
-  call ArithmeticFacts_product(sumAB, c, out product);
-  call ArithmeticFacts_maxOfThree(a, b, c, out biggest);
-  result := product + biggest;
-};
-
 procedure StarTriangleBounded_lineOfStars_len(width: int, out resultLen: int)
 spec {
   requires width >= 0;
@@ -318,14 +290,6 @@ spec {
 }
 { assume result == charCount(words, target); };
 
-procedure OccurrenceCounts_score(words: StringArray, targetWord: JavaString, targetChar: int, out result: int)
-spec {
-  ensures [occurrence_score_summary]: result == 10 * wordCount(words, targetWord) + charCount(words, targetChar);
-  ensures [occurrence_score_nonnegative]: result >= 0;
-  ensures [occurrence_score_word_lower]: result >= wordCount(words, targetWord);
-}
-{ result := 10 * wordCount(words, targetWord) + charCount(words, targetChar); };
-
 procedure BoundedCollatz_nextNumber(n: int, out result: int)
 spec {
   requires n > 0;
@@ -399,20 +363,8 @@ spec {
 }
 { assume result == ufUnion(state, left, right); assume ufValid(state, left) ==> ufValid(result, left); assume ufValid(state, right) ==> ufValid(result, right); };
 
-procedure TinyUnionFind_demoScore(out result: int)
-spec { ensures [uf_demo_score]: result == 4; }
-{ result := 4; };
-
 // Derived, stacked properties for the original 10 programs. These procedures
 // use the first-order contracts above as facts instead of re-reading Java loops.
-
-procedure ArithmeticFacts_scoreDominatesInputs(a: int, b: int, c: int, out result: int)
-spec {
-  ensures [score_dominates_a_term]: result >= ((a + b) * c) + a;
-  ensures [score_dominates_b_term]: result >= ((a + b) * c) + b;
-  ensures [score_dominates_c_term]: result >= ((a + b) * c) + c;
-}
-{ call ArithmeticFacts_score(a, b, c, out result); };
 
 procedure StarTriangleBounded_zeroHeightArea(out result: int)
 spec { ensures [zero_height_area]: result == 0; }
@@ -446,10 +398,6 @@ spec {
   ensures [common_length_right_bound_derived]: arrLen(result) <= arrLen(right);
 }
 { call CommonValuesArray_commonDistinct_shape(left, right, out result); };
-
-procedure OccurrenceCounts_scoreNonnegative(words: StringArray, targetWord: JavaString, targetChar: int, out result: int)
-spec { ensures [occurrence_score_nonnegative_derived]: result >= 0; }
-{ call OccurrenceCounts_score(words, targetWord, targetChar, out result); };
 
 procedure BoundedCollatz_positiveStep(n: int, out result: int)
 spec {
@@ -568,24 +516,12 @@ procedure ArrayAllPositive_allPositive()
 spec { ensures [ArrayAllPositive_allPositive_chain]: true; }
 { assume true; };
 
-procedure ArrayAllPositive_positiveBonus()
-spec { ensures [ArrayAllPositive_positiveBonus_chain]: true; }
-{ assume true; };
-
 procedure ArrayAnyNegative_anyNegative()
 spec { ensures [ArrayAnyNegative_anyNegative_chain]: true; }
 { assume true; };
 
-procedure ArrayAnyNegative_negativePenalty()
-spec { ensures [ArrayAnyNegative_negativePenalty_chain]: true; }
-{ assume true; };
-
 procedure ArrayIsSorted_isSorted()
 spec { ensures [ArrayIsSorted_isSorted_chain]: true; }
-{ assume true; };
-
-procedure ArrayIsSorted_sortedScore()
-spec { ensures [ArrayIsSorted_sortedScore_chain]: true; }
 { assume true; };
 
 procedure ArrayFirstIndex_firstIndexOf()
@@ -688,10 +624,6 @@ procedure StringIsPalindrome_isPalindrome()
 spec { ensures [StringIsPalindrome_isPalindrome_chain]: true; }
 { assume true; };
 
-procedure StringIsPalindrome_palindromeScore()
-spec { ensures [StringIsPalindrome_palindromeScore_chain]: true; }
-{ assume true; };
-
 procedure StringRemoveSpaces_removeSpaces()
 spec { ensures [StringRemoveSpaces_removeSpaces_chain]: true; }
 { assume true; };
@@ -752,10 +684,6 @@ procedure NumberIsPrimeBounded_isPrime()
 spec { ensures [NumberIsPrimeBounded_isPrime_chain]: true; }
 { assume true; };
 
-procedure NumberIsPrimeBounded_primeBonus()
-spec { ensures [NumberIsPrimeBounded_primeBonus_chain]: true; }
-{ assume true; };
-
 procedure NumberDivisorCount_divisorCount()
 spec { ensures [NumberDivisorCount_divisorCount_chain]: true; }
 { assume true; };
@@ -790,8 +718,4 @@ spec { ensures [StackArrayCounter_sum_chain]: true; }
 
 procedure StackArrayCounter_size()
 spec { ensures [StackArrayCounter_size_chain]: true; }
-{ assume true; };
-
-procedure StackArrayCounter_demo()
-spec { ensures [StackArrayCounter_demo_chain]: true; }
 { assume true; };

@@ -35,21 +35,12 @@ public class OccurrenceCounts {
     }
 
     /**
-     * CS61B-style intent: Combine word and character counts into a weighted score.
-     * Semantic target: result = 10 * countWord(words, targetWord) + countCharacter(words, targetChar).
-     */
-    public static int score(String[] words, String targetWord, char targetChar) {
-        return countWord(words, targetWord) * 10 + countCharacter(words, targetChar);
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         String[] words = new String[] {"bee", "bear", "bee", "bead"};
         System.out.println(countWord(words, "bee"));
-        System.out.println(score(words, "bee", 'e'));
+        System.out.println(countCharacter(words, 'e'));
     }
 }
-

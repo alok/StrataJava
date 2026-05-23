@@ -74,11 +74,11 @@ extra property on top of those contracts. The 40 expansion programs currently
 remain lightweight procedure/spec anchors until they receive the same review.
 
 The sketch now also has a first executable reuse path. `max3` and `collatzNext`
-are defined as Core functions, the corresponding procedures compute with
-assignment or branching instead of assuming their result, and
-`ArithmeticFacts_scoreViaCalls` chains three verified procedure contracts
-(`sum`, `product`, `maxOfThree`) to prove a later score relation and an
-all-inputs-equal corollary.
+are defined as Core functions, and the corresponding procedures compute with
+assignment or branching instead of assuming their result. A previous synthetic
+`score` chaining harness was removed; the repo should prefer source-backed
+method chains such as `sumAll -> sumRange`, `evens -> countEvens`, and
+`commonDistinct -> containsBefore/contains`.
 
 ## How To Read The Artifacts
 
@@ -90,8 +90,9 @@ all-inputs-equal corollary.
   not a promised complete Java frontend, but it is now checked against the
   current Strata `strata verify` command.
 - [scripts/check-semantics.py](/Users/alokbeniwal/StrataJava/scripts/check-semantics.py) validates that every corpus source file has a semantic
-  card, every semantic card has the required stack layers, and every listed
-  Strata procedure name appears in the Core sketch.
+  card, public non-`main` Java methods exactly match the method cards, every
+  semantic card has the required stack layers, and every listed Strata
+  procedure name appears in the Core sketch.
 - [scripts/check-strata-core.sh](/Users/alokbeniwal/StrataJava/scripts/check-strata-core.sh) builds a Strata checkout, parses the Core sketch,
   type-checks it, generates verification conditions, and runs an SMT pass when
   a solver is available.
@@ -126,7 +127,8 @@ The chain should support theorem-like reuse:
 - `ArrayMinMax.minValue` and `maxValue` establish extremum facts; `minMaxDifference`
   uses both to state the spread relation.
 - `TinyUnionFind.union` establishes a relation-level connectivity update;
-  `demoScore` uses the union summaries to justify the fixed result.
+  a future source-backed query should use the union summaries instead of a
+  fixed demo-score wrapper.
 - `ArrayCopy.copy` establishes length-preserving element copy semantics;
   `SelectionSortCopy.sortedCopy` stacks sortedness and permutation obligations
   on top of that copy fact.

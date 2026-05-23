@@ -18,23 +18,11 @@ public class ArrayAnyNegative {
     }
 
     /**
-     * CS61B-style intent: Return a penalty when a negative exists.
-     * Semantic target: Result is -1 iff anyNegative(items), otherwise zero.
-     */
-    public static int negativePenalty(int[] items) {
-        if (anyNegative(items)) {
-            return -1;
-        }
-        return 0;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         int[] data = new int[] {1, -2, 3};
         System.out.println(anyNegative(data));
-        System.out.println(negativePenalty(data));
     }
 }

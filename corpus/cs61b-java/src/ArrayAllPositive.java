@@ -18,23 +18,11 @@ public class ArrayAllPositive {
     }
 
     /**
-     * CS61B-style intent: Return length when all values are positive.
-     * Semantic target: Result is items.length iff allPositive(items), otherwise zero.
-     */
-    public static int positiveBonus(int[] items) {
-        if (allPositive(items)) {
-            return items.length;
-        }
-        return 0;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         int[] data = new int[] {1, 2, 3};
         System.out.println(allPositive(data));
-        System.out.println(positiveBonus(data));
     }
 }

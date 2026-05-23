@@ -18,23 +18,11 @@ public class ArrayIsSorted {
     }
 
     /**
-     * CS61B-style intent: Score an array based on sortedness.
-     * Semantic target: Result is length for sorted input and negative length otherwise.
-     */
-    public static int sortedScore(int[] items) {
-        if (isSorted(items)) {
-            return items.length;
-        }
-        return -items.length;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         int[] data = new int[] {1, 3, 3, 8};
         System.out.println(isSorted(data));
-        System.out.println(sortedScore(data));
     }
 }

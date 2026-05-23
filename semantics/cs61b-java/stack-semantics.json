@@ -99,17 +99,6 @@
             "verification": "Postconditions a <= result, b <= result, c <= result, and result == a || result == b || result == c.",
             "strata_core": "ArithmeticFacts_maxOfThree"
           }
-        },
-        {
-          "name": "score",
-          "signature": "int score(int a, int b, int c)",
-          "layers": {
-            "surface": "Compose sum, product, and maxOfThree into one score.",
-            "functional": "result = ((a + b) * c) + max(a, b, c).",
-            "operational": "Calls sum, product, maxOfThree, then sum again.",
-            "verification": "Relational postcondition connects caller result to callee summaries.",
-            "strata_core": "ArithmeticFacts_score"
-          }
         }
       ]
     },
@@ -128,17 +117,6 @@
             "verification": "Invariant: ok implies every scanned value is positive.",
             "strata_core": "ArrayAllPositive_allPositive"
           }
-        },
-        {
-          "name": "positiveBonus",
-          "signature": "int positiveBonus(int[] items)",
-          "layers": {
-            "surface": "Return length when all values are positive.",
-            "functional": "Result is items.length iff allPositive(items), otherwise zero.",
-            "operational": "Branches on allPositive.",
-            "verification": "Postcondition reuses allPositive summary.",
-            "strata_core": "ArrayAllPositive_positiveBonus"
-          }
         }
       ]
     },
@@ -156,17 +134,6 @@
             "operational": "A bounded loop sets found when it sees a negative value.",
             "verification": "Invariant: found is equivalent to a negative in the scanned prefix.",
             "strata_core": "ArrayAnyNegative_anyNegative"
-          }
-        },
-        {
-          "name": "negativePenalty",
-          "signature": "int negativePenalty(int[] items)",
-          "layers": {
-            "surface": "Return a penalty when a negative exists.",
-            "functional": "Result is -1 iff anyNegative(items), otherwise zero.",
-            "operational": "Branches on anyNegative.",
-            "verification": "Postcondition reuses anyNegative summary.",
-            "strata_core": "ArrayAnyNegative_negativePenalty"
           }
         }
       ]
@@ -330,17 +297,6 @@
             "operational": "A bounded loop compares each adjacent pair.",
             "verification": "Invariant: sorted means every scanned adjacent pair is ordered.",
             "strata_core": "ArrayIsSorted_isSorted"
-          }
-        },
-        {
-          "name": "sortedScore",
-          "signature": "int sortedScore(int[] items)",
-          "layers": {
-            "surface": "Score an array based on sortedness.",
-            "functional": "Result is length for sorted input and negative length otherwise.",
-            "operational": "Branches on isSorted.",
-            "verification": "Postcondition reuses isSorted summary.",
-            "strata_core": "ArrayIsSorted_sortedScore"
           }
         }
       ]
@@ -1249,17 +1205,6 @@
             "verification": "Invariant: prime means no scanned divisor divides n.",
             "strata_core": "NumberIsPrimeBounded_isPrime"
           }
-        },
-        {
-          "name": "primeBonus",
-          "signature": "int primeBonus(int n)",
-          "layers": {
-            "surface": "Return n only when prime.",
-            "functional": "Result is n iff isPrime(n), otherwise zero.",
-            "operational": "Branches on isPrime.",
-            "verification": "Postcondition reuses isPrime summary.",
-            "strata_core": "NumberIsPrimeBounded_primeBonus"
-          }
         }
       ]
     },
@@ -1288,17 +1233,6 @@
             "operational": "Nested bounded loops scan words and characters.",
             "verification": "Nested invariants track completed words plus current word prefix.",
             "strata_core": "OccurrenceCounts_countCharacter"
-          }
-        },
-        {
-          "name": "score",
-          "signature": "int score(String[] words, String targetWord, char targetChar)",
-          "layers": {
-            "surface": "Combine word and character counts into a weighted score.",
-            "functional": "result = 10 * countWord(words, targetWord) + countCharacter(words, targetChar).",
-            "operational": "Calls countWord and countCharacter, then combines integer results.",
-            "verification": "Caller postcondition follows from both counting summaries.",
-            "strata_core": "OccurrenceCounts_score"
           }
         }
       ]
@@ -1368,17 +1302,6 @@
             "operational": "Single return step.",
             "verification": "Postcondition exposes the size field.",
             "strata_core": "StackArrayCounter_size"
-          }
-        },
-        {
-          "name": "demo",
-          "signature": "int demo()",
-          "layers": {
-            "surface": "Run a fixed stack sequence.",
-            "functional": "Result is 14 for pushes 5 and 7 plus size 2.",
-            "operational": "Allocates a stack, pushes two values, then calls sum and size.",
-            "verification": "Postcondition reuses push, sum, and size summaries.",
-            "strata_core": "StackArrayCounter_demo"
           }
         }
       ]
@@ -1466,17 +1389,6 @@
             "operational": "A bounded loop clears ok on a mismatch.",
             "verification": "Invariant: ok means all scanned mirrored pairs match.",
             "strata_core": "StringIsPalindrome_isPalindrome"
-          }
-        },
-        {
-          "name": "palindromeScore",
-          "signature": "int palindromeScore(String text)",
-          "layers": {
-            "surface": "Score palindromes by length.",
-            "functional": "Result is length iff isPalindrome is true, otherwise zero.",
-            "operational": "Branches on isPalindrome.",
-            "verification": "Postcondition reuses isPalindrome summary.",
-            "strata_core": "StringIsPalindrome_palindromeScore"
           }
         }
       ]
@@ -1684,17 +1596,6 @@
             "operational": "Finds both roots, branches on invalid/same-root cases, then rewrites one root parent and one size slot.",
             "verification": "Frame condition: only root metadata changes; relation after union is the equivalence closure adding left ~ right.",
             "strata_core": "TinyUnionFind_union_relation"
-          }
-        },
-        {
-          "name": "demoScore",
-          "signature": "int demoScore()",
-          "layers": {
-            "surface": "Construct a six-item union-find, union three edges, then return the component size if connected.",
-            "functional": "result = 4 for the fixed demo sequence.",
-            "operational": "Object allocation followed by three union calls, one connected call, and one sizeOf call.",
-            "verification": "Postcondition result == 4 follows from union summaries and size encoding.",
-            "strata_core": "TinyUnionFind_demoScore"
           }
         }
       ]

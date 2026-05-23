@@ -86,25 +86,15 @@ public class TinyUnionFind {
     }
 
     /**
-     * CS61B-style intent: Construct a six-item union-find, union three edges, then return the component size if connected.
-     * Semantic target: result = 4 for the fixed demo sequence.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
-    public static int demoScore() {
+    public static void main(String[] args) {
         TinyUnionFind uf = new TinyUnionFind(6);
         uf.union(0, 1);
         uf.union(2, 3);
         uf.union(1, 2);
-        if (uf.connected(0, 3)) {
-            return uf.sizeOf(0);
-        }
-        return 0;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
-     */
-    public static void main(String[] args) {
-        System.out.println(demoScore());
+        System.out.println(uf.connected(0, 3));
+        System.out.println(uf.sizeOf(0));
     }
 }

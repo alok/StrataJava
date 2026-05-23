@@ -462,23 +462,14 @@ PROGRAMS: list[ProgramSpec] = [
                 return ok;
             }
 
-            public static int positiveBonus(int[] items) {
-                if (allPositive(items)) {
-                    return items.length;
-                }
-                return 0;
-            }
-
             public static void main(String[] args) {
                 int[] data = new int[] {1, 2, 3};
                 System.out.println(allPositive(data));
-                System.out.println(positiveBonus(data));
             }
         }
         """,
         [
             m("allPositive", "boolean allPositive(int[] items)", "Check that every item is positive.", "Result is true iff all entries are greater than zero.", "A bounded loop clears ok when it finds a nonpositive value.", "Invariant: ok implies every scanned value is positive."),
-            m("positiveBonus", "int positiveBonus(int[] items)", "Return length when all values are positive.", "Result is items.length iff allPositive(items), otherwise zero.", "Branches on allPositive.", "Postcondition reuses allPositive summary."),
         ],
     ),
     ProgramSpec(
@@ -498,23 +489,14 @@ PROGRAMS: list[ProgramSpec] = [
                 return found;
             }
 
-            public static int negativePenalty(int[] items) {
-                if (anyNegative(items)) {
-                    return -1;
-                }
-                return 0;
-            }
-
             public static void main(String[] args) {
                 int[] data = new int[] {1, -2, 3};
                 System.out.println(anyNegative(data));
-                System.out.println(negativePenalty(data));
             }
         }
         """,
         [
             m("anyNegative", "boolean anyNegative(int[] items)", "Check whether any item is negative.", "Result is true iff at least one entry is less than zero.", "A bounded loop sets found when it sees a negative value.", "Invariant: found is equivalent to a negative in the scanned prefix."),
-            m("negativePenalty", "int negativePenalty(int[] items)", "Return a penalty when a negative exists.", "Result is -1 iff anyNegative(items), otherwise zero.", "Branches on anyNegative.", "Postcondition reuses anyNegative summary."),
         ],
     ),
     ProgramSpec(
@@ -534,23 +516,14 @@ PROGRAMS: list[ProgramSpec] = [
                 return sorted;
             }
 
-            public static int sortedScore(int[] items) {
-                if (isSorted(items)) {
-                    return items.length;
-                }
-                return -items.length;
-            }
-
             public static void main(String[] args) {
                 int[] data = new int[] {1, 3, 3, 8};
                 System.out.println(isSorted(data));
-                System.out.println(sortedScore(data));
             }
         }
         """,
         [
             m("isSorted", "boolean isSorted(int[] items)", "Check nondecreasing order.", "Result is true iff adjacent pairs are ordered.", "A bounded loop compares each adjacent pair.", "Invariant: sorted means every scanned adjacent pair is ordered."),
-            m("sortedScore", "int sortedScore(int[] items)", "Score an array based on sortedness.", "Result is length for sorted input and negative length otherwise.", "Branches on isSorted.", "Postcondition reuses isSorted summary."),
         ],
     ),
     ProgramSpec(
@@ -972,22 +945,14 @@ PROGRAMS: list[ProgramSpec] = [
                 return ok;
             }
 
-            public static int palindromeScore(String text) {
-                if (isPalindrome(text)) {
-                    return text.length();
-                }
-                return 0;
-            }
-
             public static void main(String[] args) {
                 System.out.println(isPalindrome("level"));
-                System.out.println(palindromeScore("java"));
+                System.out.println(isPalindrome("java"));
             }
         }
         """,
         [
             m("isPalindrome", "boolean isPalindrome(String text)", "Check mirrored character equality.", "Result is true iff every position equals its mirror.", "A bounded loop clears ok on a mismatch.", "Invariant: ok means all scanned mirrored pairs match."),
-            m("palindromeScore", "int palindromeScore(String text)", "Score palindromes by length.", "Result is length iff isPalindrome is true, otherwise zero.", "Branches on isPalindrome.", "Postcondition reuses isPalindrome summary."),
         ],
     ),
     ProgramSpec(
@@ -1230,22 +1195,14 @@ PROGRAMS: list[ProgramSpec] = [
                 return prime;
             }
 
-            public static int primeBonus(int n) {
-                if (isPrime(n)) {
-                    return n;
-                }
-                return 0;
-            }
-
             public static void main(String[] args) {
                 System.out.println(isPrime(13));
-                System.out.println(primeBonus(12));
+                System.out.println(isPrime(12));
             }
         }
         """,
         [
             m("isPrime", "boolean isPrime(int n)", "Check whether n is prime by bounded trial division.", "Result is true iff n >= 2 and no divisor d in 2..n-1 divides n.", "A bounded loop clears prime when it finds a divisor.", "Invariant: prime means no scanned divisor divides n."),
-            m("primeBonus", "int primeBonus(int n)", "Return n only when prime.", "Result is n iff isPrime(n), otherwise zero.", "Branches on isPrime.", "Postcondition reuses isPrime summary."),
         ],
     ),
     ProgramSpec(
@@ -1391,15 +1348,12 @@ PROGRAMS: list[ProgramSpec] = [
                 return size;
             }
 
-            public static int demo() {
+            public static void main(String[] args) {
                 StackArrayCounter stack = new StackArrayCounter(3);
                 stack.push(5);
                 stack.push(7);
-                return stack.sum() + stack.size();
-            }
-
-            public static void main(String[] args) {
-                System.out.println(demo());
+                System.out.println(stack.sum());
+                System.out.println(stack.size());
             }
         }
         """,
@@ -1407,7 +1361,6 @@ PROGRAMS: list[ProgramSpec] = [
             m("push", "boolean push(int value)", "Push a value if capacity remains.", "Result is true iff size grows by one and the value is stored.", "A conditional updates array and size or leaves state unchanged.", "Frame condition: only values[size] and size change on success."),
             m("sum", "int sum()", "Sum stack contents up to size.", "Result is the sum of values[0..size-1].", "A bounded loop accumulates stored values.", "Invariant: total is sum of scanned stack prefix."),
             m("size", "int size()", "Return the current stack size.", "Result equals the private size field.", "Single return step.", "Postcondition exposes the size field."),
-            m("demo", "int demo()", "Run a fixed stack sequence.", "Result is 14 for pushes 5 and 7 plus size 2.", "Allocates a stack, pushes two values, then calls sum and size.", "Postcondition reuses push, sum, and size summaries."),
         ],
     ),
 ]

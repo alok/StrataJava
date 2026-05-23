@@ -18,22 +18,11 @@ public class StringIsPalindrome {
     }
 
     /**
-     * CS61B-style intent: Score palindromes by length.
-     * Semantic target: Result is length iff isPalindrome is true, otherwise zero.
-     */
-    public static int palindromeScore(String text) {
-        if (isPalindrome(text)) {
-            return text.length();
-        }
-        return 0;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         System.out.println(isPalindrome("level"));
-        System.out.println(palindromeScore("java"));
+        System.out.println(isPalindrome("java"));
     }
 }

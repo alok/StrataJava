@@ -24,8 +24,8 @@ public class ArrayRangeSum {
     }
 
     /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         int[] data = new int[] {2, 4, 6, 8};

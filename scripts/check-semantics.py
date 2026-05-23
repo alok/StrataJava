@@ -21,6 +21,9 @@ REQUIRED_CHAIN = [
     ("C4.verification_to_strata_core", "L4.verification", "L5.strata_core"),
 ]
 FORBIDDEN_SOURCE_TOKENS = re.compile(r"\b(throw|throws|try|catch|Exception|while)\b|recurs", re.IGNORECASE)
+PUBLIC_METHOD = re.compile(
+    r"\bpublic\s+(?:static\s+)?(?:[A-Za-z0-9_\[\]]+|void)\s+([A-Za-z0-9_]+)\s*\("
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -91,9 +94,23 @@ def validate_semantics(sources: set[str]) -> None:
     core_text = CORE_SKETCH.read_text(encoding="utf-8")
     total_methods = 0
     for program in programs:
+        source_path = ROOT / program["source_file"]
+        java_text = source_path.read_text(encoding="utf-8")
+        public_methods = {
+            name
+            for name in PUBLIC_METHOD.findall(java_text)
+            if name != "main" and name != program["class"]
+        }
         methods = program.get("methods")
         if not isinstance(methods, list) or not methods:
             raise ValueError(f"{program['class']} must have at least one method")
+        semantic_methods = {method.get("name") for method in methods}
+        if semantic_methods != public_methods:
+            missing = sorted(public_methods - semantic_methods)
+            stale = sorted(semantic_methods - public_methods)
+            raise ValueError(
+                f"{program['class']} method mismatch missing_semantics={missing} stale_semantics={stale}"
+            )
         for method in methods:
             total_methods += 1
             layers = method.get("layers")

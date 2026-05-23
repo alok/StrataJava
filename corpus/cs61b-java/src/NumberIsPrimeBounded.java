@@ -18,22 +18,11 @@ public class NumberIsPrimeBounded {
     }
 
     /**
-     * CS61B-style intent: Return n only when prime.
-     * Semantic target: Result is n iff isPrime(n), otherwise zero.
-     */
-    public static int primeBonus(int n) {
-        if (isPrime(n)) {
-            return n;
-        }
-        return 0;
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
         System.out.println(isPrime(13));
-        System.out.println(primeBonus(12));
+        System.out.println(isPrime(12));
     }
 }

@@ -49,21 +49,14 @@ public class StackArrayCounter {
     }
 
     /**
-     * CS61B-style intent: Run a fixed stack sequence.
-     * Semantic target: Result is 14 for pushes 5 and 7 plus size 2.
+     * Smoke-only harness: prints representative calls for comparison.
+     * Not a semantic target; public methods above carry the checked intent.
      */
-    public static int demo() {
+    public static void main(String[] args) {
         StackArrayCounter stack = new StackArrayCounter(3);
         stack.push(5);
         stack.push(7);
-        return stack.sum() + stack.size();
-    }
-
-    /**
-     * CS61B-style intent: Run a small smoke example for this class.
-     * Semantic target: exercise representative calls without changing corpus semantics.
-     */
-    public static void main(String[] args) {
-        System.out.println(demo());
+        System.out.println(stack.sum());
+        System.out.println(stack.size());
     }
 }

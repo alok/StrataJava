@@ -104,10 +104,11 @@ first StrataJava corpus.
   `nextNumber` use executable assignment/branch bodies; and the old `max3` and
   `collatzNext` contract axioms were removed. The local assumption/axiom line
   count in `CoreSketch.core.st` dropped from 136 to 130.
-- `ArithmeticFacts_scoreViaCalls` is the first explicit call-chained proof
-  target: it calls `sum`, `product`, and `maxOfThree`, then proves downstream
-  score properties from the reused contracts. The Strata stress check increased
-  from 202 to 210 VCs, and `z3` discharged all 210.
+- `ArithmeticFacts_scoreViaCalls` was initially used as the first explicit
+  call-chained proof target: it called `sum`, `product`, and `maxOfThree`, then
+  proved downstream score properties from the reused contracts. This later
+  proved too synthetic for the corpus and was removed with the other artificial
+  score/bonus/demo wrappers.
 - The remaining `assume` sites are not all equal. The high-value blockers are
   the abstract `JavaString`, `IntArray`, `StringArray`, and `UnionFindState`
   models, which need extensional constructors/selectors or heap/state models
@@ -125,3 +126,13 @@ first StrataJava corpus.
   source snippet with line numbers next to its stdout, source probe, and topic.
   `check-all.sh` runs the same test in quiet mode so accidental runtime
   breakage still fails the normal check without flooding the terminal.
+- A honesty pass removed public methods that were mostly synthetic score,
+  bonus, penalty, or fixed-demo wrappers rather than source-backed corpus
+  behavior: `ArithmeticFacts.score`, `ArrayAllPositive.positiveBonus`,
+  `ArrayAnyNegative.negativePenalty`, `ArrayIsSorted.sortedScore`,
+  `NumberIsPrimeBounded.primeBonus`, `OccurrenceCounts.score`,
+  `StackArrayCounter.demo`, `StringIsPalindrome.palindromeScore`, and
+  `TinyUnionFind.demoScore`. Their Strata targets and semantic cards were also
+  removed. The remaining `main` methods are now commented as smoke-only
+  harnesses rather than semantic targets, and `check-semantics.py` now rejects
+  stale method cards that do not correspond to a real public Java method.
