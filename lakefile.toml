@@ -1,6 +1,6 @@
 name = "StrataJava"
 version = "0.1.0"
-defaultTargets = ["StrataJava", "stratajava"]
+defaultTargets = ["StrataJava", "stratajava", "human_checked_lint"]
 
 [[require]]
 name = "Strata"
@@ -13,3 +13,7 @@ name = "StrataJava"
 [[lean_exe]]
 name = "stratajava"
 root = "StrataJava.Main"
+
+[[lean_exe]]
+name = "human_checked_lint"
+root = "StrataJava.HumanCheckedLint"

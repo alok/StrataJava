@@ -147,3 +147,13 @@ first StrataJava corpus.
   verification conditions, reported the expected no-solve summary
   `Finished with 93 goals passed, 93 failed`, and then discharged all 186 goals
   with `z3`.
+- Human review comments are important project state. The restored
+  `// human-checked` markers are now protected by a Lean executable linter,
+  `lake exe human_checked_lint`, which emits warnings for public non-main corpus
+  functions lacking nearby `human-checked` text but deliberately exits
+  successfully so comment coverage does not block Java/Lean/Strata builds.
+- The linter is usable both as a corpus-wide environment check and as a minimal
+  touched-file check. `scripts/check-human-checked-lint.sh` accepts file or
+  directory arguments, and the versioned `scripts/hooks/pre-commit` hook runs it
+  only on staged Java corpus files when `git config core.hooksPath scripts/hooks`
+  has been set in the local checkout.

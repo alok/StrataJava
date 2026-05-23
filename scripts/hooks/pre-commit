@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+files=()
+while IFS= read -r file; do
+  if [[ -n "$file" ]]; then
+    files+=("$file")
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMR -- 'corpus/cs61b-java/src/*.java')
+
+if [[ "${#files[@]}" -eq 0 ]]; then
+  exit 0
+fi
+
+echo "Running human_checked_lint on staged Java corpus files..."
+./scripts/check-human-checked-lint.sh "${files[@]}"

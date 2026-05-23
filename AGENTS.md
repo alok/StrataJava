@@ -21,6 +21,12 @@ lake build
 # Load/type-check the corpus Core sketch through the Lake executable
 lake exe stratajava
 
+# Warn on corpus functions missing human-checked review markers
+./scripts/check-human-checked-lint.sh
+
+# Minimal warning lint for one or more touched Java files
+./scripts/check-human-checked-lint.sh corpus/cs61b-java/src/ArithmeticFacts.java
+
 # Build with Lake and stress the Strata Core target
 ./scripts/check-lake.sh
 
@@ -42,10 +48,16 @@ java -cp build/classes/cs61b-java <ClassName>
 ```
 
 `check-all.sh` runs the Java compile check, `uv run scripts/check-semantics.py`,
-the main-method smoke outputs in quiet mode, the Lake-native Strata check, and
-the older external-checkout Strata Core stress check when a Strata checkout is
-available. Run `scripts/check-strata-core.sh` directly when an external Strata
-checkout must be treated as required.
+the main-method smoke outputs in quiet mode, the Lean `human_checked_lint`
+warning pass, the Lake-native Strata check, and the older external-checkout
+Strata Core stress check when a Strata checkout is available. Run
+`scripts/check-strata-core.sh` directly when an external Strata checkout must be
+treated as required.
+
+For as-you-go guidance, set this repo's local Git hook path once with
+`git config core.hooksPath scripts/hooks`. The versioned pre-commit hook runs
+`human_checked_lint` only on staged Java corpus files and prints advisory
+warnings without turning missing review comments into build errors.
 
 ## Corpus Constraints
 
@@ -67,6 +79,8 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
   core dependency
 - `StrataJava.lean` and `StrataJava/Main.lean` — Lean wrapper and executable
   that drive Strata over the corpus Core sketch
+- `StrataJava/HumanCheckedLint.lean` — Lean warning linter for public corpus
+  functions missing nearby `human-checked` comments
 - `metadata/corpus.json` — source of truth: maps each file to its topic, CS 61B source probe (the Berkeley skeleton file that motivated it), and language features used
 - `semantics/cs61b-java/stack-semantics.json` — machine-readable chained semantics for every corpus method
 - `semantics/strata-core/cs61b-java/CoreSketch.core.st` — Strata Core / Boogie-like semantic target sketch
@@ -78,7 +92,11 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `scripts/check-main-output.py` — runs every Java `main` method and can print
   the source snippet next to stdout for inspection
 - `scripts/check-semantics.py` — semantic-chain validator
+- `scripts/check-human-checked-lint.sh` — minimal wrapper for the Lean
+  `human_checked_lint` warning executable; accepts files or directories
 - `scripts/check-lake.sh` — Lake-native Strata build/load/VC stress harness
+- `scripts/hooks/pre-commit` — versioned hook that runs the human-checked
+  warning linter only on staged Java corpus files when `core.hooksPath` is set
 - `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
 - `scripts/check-lean-strata-boogie.sh` — stress harness for `lean/strata/boogie/CoreSketch.core.st`
 - `scripts/check-all.sh` — combined check script
