@@ -2,7 +2,7 @@
   "name": "cs61b-java-small-v1",
   "created": "2026-05-22",
   "purpose": "First Java corpus for Strata experiments, using CS 61B-style topics while staying in a small loop/if/function-call subset.",
-  "source_policy": "Programs are original StrataJava examples. Public Berkeley-CS61B repositories were scraped only to choose representative topics and record source probes; code was not copied verbatim.",
+  "source_policy": "Programs are original StrataJava examples. Public Berkeley-CS61B repositories were scraped to choose representative topics and record source probes. Alok later clarified that verbatim public CS 61B examples are acceptable for future corpus expansion, but v1 remains original.",
   "global_constraints": [
     "no throw/try/catch",
     "no recursion",
@@ -93,4 +93,3 @@
     }
   ]
 }
-

@@ -1,0 +1,521 @@
+{
+  "semantics_stack_version": "0.1",
+  "intent": "Attach stackable semantics to each Java corpus program: source, surface summary, functional relation, operational story, verification obligations, and a Strata Core sketch target.",
+  "semantic_chain": [
+    {
+      "id": "C0.source_to_surface",
+      "from": "L0.source",
+      "to": "L1.surface",
+      "consumes": "Java source file, class name, method names, signatures, comments, and simple control-flow shape.",
+      "emits": "A concise surface summary for each method.",
+      "obligation": "The surface summary must describe the method in terms that are checkable against the source."
+    },
+    {
+      "id": "C1.surface_to_functional",
+      "from": "L1.surface",
+      "to": "L2.functional",
+      "consumes": "The surface summary and the method signature.",
+      "emits": "A mathematical input/output relation that ignores incidental Java execution details.",
+      "obligation": "The functional relation must make the informal intent precise enough to become a postcondition."
+    },
+    {
+      "id": "C2.functional_to_operational",
+      "from": "L2.functional",
+      "to": "L3.operational",
+      "consumes": "The functional relation and the Java body.",
+      "emits": "A bounded execution story for calls, conditionals, loops, array accesses, string traversals, and mutation.",
+      "obligation": "The operational story must explain why the Java steps implement the functional relation."
+    },
+    {
+      "id": "C3.operational_to_verification",
+      "from": "L3.operational",
+      "to": "L4.verification",
+      "consumes": "The execution story.",
+      "emits": "Preconditions, postconditions, loop invariants, frame conditions, and proof obligations.",
+      "obligation": "The verification layer must expose the proof points needed to connect execution to the functional relation."
+    },
+    {
+      "id": "C4.verification_to_strata_core",
+      "from": "L4.verification",
+      "to": "L5.strata_core",
+      "consumes": "The proof obligations.",
+      "emits": "A Strata Core/Boogie-like procedure name and contract target.",
+      "obligation": "The Strata Core sketch must preserve the verification condition as a named procedure/spec target."
+    }
+  ],
+  "required_method_layers": [
+    "surface",
+    "functional",
+    "operational",
+    "verification",
+    "strata_core"
+  ],
+  "programs": [
+    {
+      "source_file": "corpus/cs61b-java/src/ArithmeticFacts.java",
+      "class": "ArithmeticFacts",
+      "program_semantics": "Pure integer helper methods. The interesting stack relation is that direct Java arithmetic and method calls collapse to simple integer formulas.",
+      "methods": [
+        {
+          "name": "product",
+          "signature": "int product(int a, int b)",
+          "layers": {
+            "surface": "Compute the product of two integers.",
+            "functional": "result = a * b.",
+            "operational": "Single return step; no heap reads or writes.",
+            "verification": "Postcondition result == a * b.",
+            "strata_core": "ArithmeticFacts_product"
+          }
+        },
+        {
+          "name": "sum",
+          "signature": "int sum(int a, int b)",
+          "layers": {
+            "surface": "Compute the sum of two integers.",
+            "functional": "result = a + b.",
+            "operational": "Single return step; no heap reads or writes.",
+            "verification": "Postcondition result == a + b.",
+            "strata_core": "ArithmeticFacts_sum"
+          }
+        },
+        {
+          "name": "boundedPower",
+          "signature": "int boundedPower(int base, int exponent)",
+          "layers": {
+            "surface": "Multiply by base exponent times.",
+            "functional": "For exponent >= 0, result = base raised to exponent.",
+            "operational": "A bounded for loop from 0 to exponent updates result := result * base.",
+            "verification": "Loop invariant after i iterations: result = base^i and 0 <= i <= exponent.",
+            "strata_core": "ArithmeticFacts_boundedPower"
+          }
+        },
+        {
+          "name": "maxOfThree",
+          "signature": "int maxOfThree(int a, int b, int c)",
+          "layers": {
+            "surface": "Return the largest of three integers.",
+            "functional": "result is one of a, b, c and every input is <= result.",
+            "operational": "Two conditional updates maintain best as the largest value seen so far.",
+            "verification": "Postconditions a <= result, b <= result, c <= result, and result == a || result == b || result == c.",
+            "strata_core": "ArithmeticFacts_maxOfThree"
+          }
+        },
+        {
+          "name": "score",
+          "signature": "int score(int a, int b, int c)",
+          "layers": {
+            "surface": "Compose sum, product, and maxOfThree into one score.",
+            "functional": "result = ((a + b) * c) + max(a, b, c).",
+            "operational": "Calls sum, product, maxOfThree, then sum again.",
+            "verification": "Relational postcondition connects caller result to callee summaries.",
+            "strata_core": "ArithmeticFacts_score"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StarTriangleBounded.java",
+      "class": "StarTriangleBounded",
+      "program_semantics": "Nested bounded loops build a simple textual triangle. The first formal layer tracks lengths and cell counts before full string content.",
+      "methods": [
+        {
+          "name": "lineOfStars",
+          "signature": "String lineOfStars(int width)",
+          "layers": {
+            "surface": "Build one line containing width stars.",
+            "functional": "For width >= 0, result length is width and every character is '*'.",
+            "operational": "A bounded for loop appends one star per iteration.",
+            "verification": "Loop invariant after i iterations: builder length = i and all produced characters are stars.",
+            "strata_core": "StarTriangleBounded_lineOfStars_len"
+          }
+        },
+        {
+          "name": "triangle",
+          "signature": "String triangle(int height)",
+          "layers": {
+            "surface": "Build a newline-separated triangle with row widths 1 through height.",
+            "functional": "For height >= 0, result has height rows and row r has r stars.",
+            "operational": "Outer loop calls lineOfStars(row), then appends a newline except after the final row.",
+            "verification": "Outer invariant: completed prefix contains exactly rows 1..row-1.",
+            "strata_core": "StarTriangleBounded_triangle_rows"
+          }
+        },
+        {
+          "name": "triangleAreaCells",
+          "signature": "int triangleAreaCells(int height)",
+          "layers": {
+            "surface": "Count the number of star cells in a triangle.",
+            "functional": "For height >= 0, result = height * (height + 1) / 2.",
+            "operational": "A bounded for loop accumulates the current row number.",
+            "verification": "Loop invariant after row i: cells = i * (i + 1) / 2.",
+            "strata_core": "StarTriangleBounded_triangleAreaCells"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/IndexedString.java",
+      "class": "IndexedString",
+      "program_semantics": "String indexing example. The first formal layer tracks reverse-index arithmetic and output shape.",
+      "methods": [
+        {
+          "name": "indexed",
+          "signature": "String indexed(String text)",
+          "layers": {
+            "surface": "Append each character followed by its reverse index.",
+            "functional": "For input length n, output is the concatenation of text[i] and decimal(n - i - 1) for i in 0..n-1.",
+            "operational": "A bounded loop reads charAt(i), computes reverseIndex, and appends both.",
+            "verification": "Invariant: after i iterations, output prefix encodes exactly input positions 0..i-1.",
+            "strata_core": "IndexedString_indexed_shape"
+          }
+        },
+        {
+          "name": "digitWeight",
+          "signature": "int digitWeight(String text)",
+          "layers": {
+            "surface": "Sum the reverse indices for the input string.",
+            "functional": "For length n >= 0, result = n * (n - 1) / 2.",
+            "operational": "A bounded loop accumulates n - i - 1.",
+            "verification": "Loop invariant after i iterations: total = i * (2*n - i - 1) / 2.",
+            "strata_core": "IndexedString_digitWeight"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/DoubleCharacters.java",
+      "class": "DoubleCharacters",
+      "program_semantics": "String traversal where each input character contributes two output characters.",
+      "methods": [
+        {
+          "name": "doubleUp",
+          "signature": "String doubleUp(String text)",
+          "layers": {
+            "surface": "Repeat every character twice.",
+            "functional": "For input length n, output length is 2*n and positions 2*i and 2*i+1 both equal text[i].",
+            "operational": "A bounded loop reads one character and appends it twice.",
+            "verification": "Invariant after i iterations: output length = 2*i and doubled positions are correct for prefix i.",
+            "strata_core": "DoubleCharacters_doubleUp_shape"
+          }
+        },
+        {
+          "name": "doubledLength",
+          "signature": "int doubledLength(String text)",
+          "layers": {
+            "surface": "Return the length of doubleUp(text).",
+            "functional": "For input length n >= 0, result = 2*n.",
+            "operational": "Calls doubleUp then reads the resulting length.",
+            "verification": "Caller postcondition follows from doubleUp length summary.",
+            "strata_core": "DoubleCharacters_doubledLength"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayMinMax.java",
+      "class": "ArrayMinMax",
+      "program_semantics": "Array scans that maintain extremum summaries.",
+      "methods": [
+        {
+          "name": "minValue",
+          "signature": "int minValue(int[] items)",
+          "layers": {
+            "surface": "Return the minimum item in a nonempty array.",
+            "functional": "result is an element of items and every array element is >= result.",
+            "operational": "A bounded loop updates best whenever a smaller value is found.",
+            "verification": "Invariant after i iterations: best is the minimum of items[0..i-1].",
+            "strata_core": "ArrayMinMax_minValue"
+          }
+        },
+        {
+          "name": "maxValue",
+          "signature": "int maxValue(int[] items)",
+          "layers": {
+            "surface": "Return the maximum item in a nonempty array.",
+            "functional": "result is an element of items and every array element is <= result.",
+            "operational": "A bounded loop updates best whenever a larger value is found.",
+            "verification": "Invariant after i iterations: best is the maximum of items[0..i-1].",
+            "strata_core": "ArrayMinMax_maxValue"
+          }
+        },
+        {
+          "name": "minMaxDifference",
+          "signature": "int minMaxDifference(int[] items)",
+          "layers": {
+            "surface": "Return the spread between maximum and minimum.",
+            "functional": "result = max(items) - min(items).",
+            "operational": "Calls maxValue and minValue.",
+            "verification": "Caller postcondition follows from minValue and maxValue summaries.",
+            "strata_core": "ArrayMinMax_minMaxDifference"
+          }
+        },
+        {
+          "name": "secondLargestOfFour",
+          "signature": "int secondLargestOfFour(int[] items)",
+          "layers": {
+            "surface": "Return the second largest value among exactly the first four items.",
+            "functional": "result is the largest value after removing one occurrence of the maximum from items[0..3].",
+            "operational": "Conditionally initializes largest/second, then scans two remaining elements.",
+            "verification": "Invariant: largest and second are the top two values among the prefix scanned.",
+            "strata_core": "ArrayMinMax_secondLargestOfFour"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/EvenFilterArray.java",
+      "class": "EvenFilterArray",
+      "program_semantics": "Two-pass array filter: first count matching elements, then construct an output array.",
+      "methods": [
+        {
+          "name": "isEven",
+          "signature": "boolean isEven(int value)",
+          "layers": {
+            "surface": "Test divisibility by two.",
+            "functional": "result is true iff value mod 2 = 0.",
+            "operational": "Single return step using remainder.",
+            "verification": "Postcondition result == (value % 2 == 0).",
+            "strata_core": "EvenFilterArray_isEven"
+          }
+        },
+        {
+          "name": "countEvens",
+          "signature": "int countEvens(int[] items)",
+          "layers": {
+            "surface": "Count even values in an array.",
+            "functional": "result equals the number of indices i where items[i] is even.",
+            "operational": "A bounded loop increments count only when isEven(items[i]) is true.",
+            "verification": "Invariant after i iterations: count equals the number of even values in items[0..i-1].",
+            "strata_core": "EvenFilterArray_countEvens"
+          }
+        },
+        {
+          "name": "evens",
+          "signature": "int[] evens(int[] items)",
+          "layers": {
+            "surface": "Return a new array containing exactly the even values in order.",
+            "functional": "Output length is countEvens(items), every output item is even, and order is inherited from input.",
+            "operational": "First pass allocates exact length, second pass writes matching values left to right.",
+            "verification": "Invariant: output prefix contains exactly the even values from the scanned input prefix.",
+            "strata_core": "EvenFilterArray_evens_shape"
+          }
+        },
+        {
+          "name": "sum",
+          "signature": "int sum(int[] items)",
+          "layers": {
+            "surface": "Sum all integers in an array.",
+            "functional": "result is the finite sum of all array elements.",
+            "operational": "A bounded loop accumulates total += items[i].",
+            "verification": "Invariant after i iterations: total equals sum(items[0..i-1]).",
+            "strata_core": "EvenFilterArray_sum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/CommonValuesArray.java",
+      "class": "CommonValuesArray",
+      "program_semantics": "Nested bounded loops compute distinct common values between two arrays.",
+      "methods": [
+        {
+          "name": "containsBefore",
+          "signature": "boolean containsBefore(int[] items, int limit, int target)",
+          "layers": {
+            "surface": "Check whether target appears before a limit.",
+            "functional": "result is true iff some index i with 0 <= i < limit has items[i] == target.",
+            "operational": "A bounded loop returns true on the first matching prefix element.",
+            "verification": "If false is returned, no scanned prefix element equals target.",
+            "strata_core": "CommonValuesArray_containsBefore"
+          }
+        },
+        {
+          "name": "contains",
+          "signature": "boolean contains(int[] items, int target)",
+          "layers": {
+            "surface": "Check whether target appears anywhere in the array.",
+            "functional": "result is true iff some valid array index contains target.",
+            "operational": "A bounded loop returns true on the first matching element.",
+            "verification": "Postcondition connects result to existential membership.",
+            "strata_core": "CommonValuesArray_contains"
+          }
+        },
+        {
+          "name": "countCommonDistinct",
+          "signature": "int countCommonDistinct(int[] left, int[] right)",
+          "layers": {
+            "surface": "Count distinct values from left that also appear in right.",
+            "functional": "result is the cardinality of set(left) intersect set(right).",
+            "operational": "Scans left, tracks already-counted values in seen, and calls contains on right.",
+            "verification": "Invariant: seen[0..count-1] is duplicate-free and exactly the common values seen so far.",
+            "strata_core": "CommonValuesArray_countCommonDistinct"
+          }
+        },
+        {
+          "name": "commonDistinct",
+          "signature": "int[] commonDistinct(int[] left, int[] right)",
+          "layers": {
+            "surface": "Return distinct common values in the order first seen in left.",
+            "functional": "Output contains each value in set(left) intersect set(right) exactly once, ordered by first occurrence in left.",
+            "operational": "Allocates countCommonDistinct length, then performs a second fill pass.",
+            "verification": "Invariant: result prefix is duplicate-free and complete for scanned left prefix.",
+            "strata_core": "CommonValuesArray_commonDistinct_shape"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/OccurrenceCounts.java",
+      "class": "OccurrenceCounts",
+      "program_semantics": "Counting word and character occurrences with bounded loops.",
+      "methods": [
+        {
+          "name": "countWord",
+          "signature": "int countWord(String[] words, String target)",
+          "layers": {
+            "surface": "Count exact word matches.",
+            "functional": "result is the number of indices i where words[i].equals(target).",
+            "operational": "A bounded loop increments count on string equality.",
+            "verification": "Invariant after i iterations: count equals matches in words[0..i-1].",
+            "strata_core": "OccurrenceCounts_countWord"
+          }
+        },
+        {
+          "name": "countCharacter",
+          "signature": "int countCharacter(String[] words, char target)",
+          "layers": {
+            "surface": "Count target characters across all words.",
+            "functional": "result is the sum over words of occurrences of target in each word.",
+            "operational": "Nested bounded loops scan words and characters.",
+            "verification": "Nested invariants track completed words plus current word prefix.",
+            "strata_core": "OccurrenceCounts_countCharacter"
+          }
+        },
+        {
+          "name": "score",
+          "signature": "int score(String[] words, String targetWord, char targetChar)",
+          "layers": {
+            "surface": "Combine word and character counts into a weighted score.",
+            "functional": "result = 10 * countWord(words, targetWord) + countCharacter(words, targetChar).",
+            "operational": "Calls countWord and countCharacter, then combines integer results.",
+            "verification": "Caller postcondition follows from both counting summaries.",
+            "strata_core": "OccurrenceCounts_score"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/BoundedCollatz.java",
+      "class": "BoundedCollatz",
+      "program_semantics": "Branch-heavy transition system with an explicit step fuel bound.",
+      "methods": [
+        {
+          "name": "nextNumber",
+          "signature": "int nextNumber(int n)",
+          "layers": {
+            "surface": "Compute the next Collatz value.",
+            "functional": "If n is even, result = n / 2; otherwise result = 3*n + 1.",
+            "operational": "One conditional branch based on n % 2.",
+            "verification": "Postcondition is a two-case branch on parity.",
+            "strata_core": "BoundedCollatz_nextNumber"
+          }
+        },
+        {
+          "name": "stepsUntilOne",
+          "signature": "int stepsUntilOne(int start, int maxSteps)",
+          "layers": {
+            "surface": "Run Collatz until one or until fuel is exhausted.",
+            "functional": "For maxSteps >= 0, result is the first k <= maxSteps such that iter(start, k) = 1, or maxSteps if none is reached earlier.",
+            "operational": "A bounded for loop checks value == 1 before each transition.",
+            "verification": "Invariant: after i iterations, value = iter(start, i) and steps = i unless an early return happened.",
+            "strata_core": "BoundedCollatz_stepsUntilOne"
+          }
+        },
+        {
+          "name": "valueAfterSteps",
+          "signature": "int valueAfterSteps(int start, int maxSteps)",
+          "layers": {
+            "surface": "Return the Collatz value after bounded fuel or after reaching one.",
+            "functional": "For maxSteps >= 0, result = iter(start, k) where k is min(maxSteps, first step reaching one).",
+            "operational": "A bounded for loop updates value with nextNumber unless value is already one.",
+            "verification": "Invariant: current value is the iterated transition from start for the number of completed steps.",
+            "strata_core": "BoundedCollatz_valueAfterSteps"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/TinyUnionFind.java",
+      "class": "TinyUnionFind",
+      "program_semantics": "Small mutable disjoint-set structure. Current semantics is relation-level, with the parent array abstracted as a forest.",
+      "methods": [
+        {
+          "name": "valid",
+          "signature": "boolean valid(int item)",
+          "layers": {
+            "surface": "Check whether an item index is inside the parent array.",
+            "functional": "result is true iff 0 <= item < parent.length.",
+            "operational": "Single return step using integer comparisons.",
+            "verification": "Postcondition result == (0 <= item && item < size).",
+            "strata_core": "TinyUnionFind_valid"
+          }
+        },
+        {
+          "name": "root",
+          "signature": "int root(int item)",
+          "layers": {
+            "surface": "Find the representative root, returning -1 for invalid input.",
+            "functional": "If item is invalid, result = -1; otherwise result is a root reachable from item in the parent forest.",
+            "operational": "A bounded loop follows parent links for at most parent.length steps.",
+            "verification": "Invariant: current remains reachable from the original item and loop fuel decreases.",
+            "strata_core": "TinyUnionFind_root"
+          }
+        },
+        {
+          "name": "sizeOf",
+          "signature": "int sizeOf(int item)",
+          "layers": {
+            "surface": "Return the set size for a valid item, else zero.",
+            "functional": "If root(item) < 0, result = 0; otherwise result = -parent[root(item)].",
+            "operational": "Calls root, then branches on the sentinel result.",
+            "verification": "Postcondition ties result to root and negative-size encoding.",
+            "strata_core": "TinyUnionFind_sizeOf"
+          }
+        },
+        {
+          "name": "connected",
+          "signature": "boolean connected(int left, int right)",
+          "layers": {
+            "surface": "Check whether two items have the same valid root.",
+            "functional": "result is true iff root(left) >= 0 and root(left) = root(right).",
+            "operational": "Calls root twice and compares representatives.",
+            "verification": "Postcondition defines connectivity as root equality under validity.",
+            "strata_core": "TinyUnionFind_connected"
+          }
+        },
+        {
+          "name": "union",
+          "signature": "void union(int left, int right)",
+          "layers": {
+            "surface": "Join two sets by size; do nothing for invalid or already-connected items.",
+            "functional": "After a successful union, left and right are connected and all previous connections are preserved.",
+            "operational": "Finds both roots, branches on invalid/same-root cases, then rewrites one root parent and one size slot.",
+            "verification": "Frame condition: only root metadata changes; relation after union is the equivalence closure adding left ~ right.",
+            "strata_core": "TinyUnionFind_union_relation"
+          }
+        },
+        {
+          "name": "demoScore",
+          "signature": "int demoScore()",
+          "layers": {
+            "surface": "Construct a six-item union-find, union three edges, then return the component size if connected.",
+            "functional": "result = 4 for the fixed demo sequence.",
+            "operational": "Object allocation followed by three union calls, one connected call, and one sizeOf call.",
+            "verification": "Postcondition result == 4 follows from union summaries and size encoding.",
+            "strata_core": "TinyUnionFind_demoScore"
+          }
+        }
+      ]
+    }
+  ]
+}

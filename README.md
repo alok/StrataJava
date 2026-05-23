@@ -26,3 +26,12 @@ motivated each topic.
 This compiles every file under `corpus/cs61b-java/src` into
 `build/classes/cs61b-java`.
 
+To validate the Java corpus and the attached semantics stack:
+
+```bash
+./scripts/check-all.sh
+```
+
+The semantics artifacts live under `semantics/` and are described in
+`docs/semantics-stack.md`. The project white paper is kept at
+`docs/whitepaper.md`.

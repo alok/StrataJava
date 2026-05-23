@@ -26,3 +26,42 @@ first StrataJava corpus.
   in `corpus/cs61b-java/src`.
 - Each corpus class with a `main` method was run from the compiled output with
   stdout discarded; all 10 exited successfully.
+
+## 2026-05-23
+
+- Alok clarified that this project should use ordinary Git from now on, ignoring
+  the colocated `.jj` state. A Git root commit was created for the existing
+  corpus before starting the semantics work.
+- The requested Wednesday 11 AM context was not available through exposed Zoom
+  or screenpipe meeting/transcript tools for the 2026-05-20 10:00-13:00 Pacific
+  window. The configured Limitless MCP entries were visible in `codex mcp list`
+  but were not exposed as callable tools in this session.
+- Direct Limitless API access via the configured local environment succeeded
+  for the 2026-05-20 10:30-12:30 Pacific window. The relevant lifelog ran from
+  11:13:18 to 12:19:16 Pacific and confirmed the project intent: syntax is the
+  base layer, semantics is the valuable layer, Java is a lower-risk hackathon
+  source language, and informal comments/specs should be lifted into formal
+  Lean/Boogie/Strata statements. Raw transcript data was kept in `/tmp` and was
+  not committed.
+- Strata is active and may have breaking changes. The current Reservoir README
+  describes `.st` files using a dialect-qualified extension convention and
+  verification through `lake exe strata verify`; for this repo, the checked-in
+  `CoreSketch.core.st` is a semantic target sketch, not yet a proven
+  Strata-verified artifact.
+- Alok clarified that the semantics should be chained together, not merely
+  attached as adjacent layers. The checked-in semantics now includes an explicit
+  L0 -> L1 -> L2 -> L3 -> L4 -> L5 chain, and the validation script enforces
+  the ordered chain metadata.
+- Alok further clarified the reason chaining matters: Lean/theorem provers can
+  express semantic facts and then use them downstream as theorem inputs, while
+  Java/Python-style languages usually leave those facts in comments, human
+  memory, or untrusted AI summaries.
+- Full Wednesday 2026-05-20 Limitless notes were fetched into `/tmp` and
+  scanned for project-relevant content. The API pagination returned 47 entries,
+  including later UTC-stamped entries that extend past the local-day end time;
+  raw notes were not committed. The project-relevant material remained the SPS
+  hackathon thread, Java/Boogie derisking, Strata/Lean semantics, and later
+  hackathon/team reminders.
+- Alok clarified that verbatim public CS 61B copies are acceptable for this
+  project. The current v1 corpus remains original, but the source policy was
+  updated so future expansion can include direct public examples if useful.
