@@ -128,7 +128,7 @@ that every method has a complete chain and a Strata Core target.
 
 The current implementation has:
 
-- 10 Java corpus files under `corpus/cs61b-java/src`.
+- 50 Java corpus files under `corpus/cs61b-java/src`.
 - A machine-readable corpus manifest at `metadata/corpus.json`.
 - Chained semantics at `semantics/cs61b-java/stack-semantics.json`.
 - A Strata Core sketch at
@@ -138,11 +138,23 @@ The current implementation has:
 - Validation scripts:
   - `scripts/check-java-corpus.sh`
   - `scripts/check-semantics.py`
+  - `scripts/check-strata-core.sh`
   - `scripts/check-all.sh`
 
 The validation checks that every Java file has semantics, every method has the
 required layers, the global chain is present and ordered, and every method's
-`strata_core` target appears in the Core sketch.
+`strata_core` target appears in the Core sketch. The Strata stress harness then
+uses the current `lake exe strata verify` interface to parse, type-check, and
+generate verification conditions for the Core target, with an SMT pass when a
+solver is available.
+
+For the original 10 programs, the Core sketch now goes one layer further than
+procedure names. It includes inferred abstract axioms, preconditions,
+postconditions, and derived procedures that stack an extra property on top of
+the method-level contracts. For example, `DoubleCharacters_doubledLengthEven`
+uses the `doubledLength` contract to expose the more annoying fact that the
+computed doubled length is even, and `EvenFilterArray_evensLengthBound` stacks
+the `countEvens` bound into an output-length bound for the filtered array.
 
 ## Example Chain
 
@@ -170,13 +182,15 @@ The near-term success criterion is modest but concrete:
 - The corpus compiles as Java.
 - Every corpus method has a complete semantic chain.
 - The Strata/Boogie-like target is generated or maintained in a readable form.
+- The Strata Core target parses and type-checks against the current Strata CLI.
 - The chain exposes facts that later methods can cite.
 - A human can inspect the chain and see why the target theorem/spec follows
   from the previous layer.
 
-The next stronger success criterion is to make the Strata Core sketch actually
-pass Strata verification. After that, the project can grow toward generated
-frontends and checked refinement theorems.
+The next stronger success criterion is to replace more of the lightweight target
+stubs with concrete procedure bodies and invariants that pass full Strata
+verification without relying on assumptions. After that, the project can grow
+toward generated frontends and checked refinement theorems.
 
 ## Open Research Questions
 

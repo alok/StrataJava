@@ -14,6 +14,9 @@ StrataJava is a small Java corpus for exercising [`strata-org/Strata`](https://r
 
 # Compile corpus and validate semantic-chain artifacts (requires uv)
 ./scripts/check-all.sh
+
+# Stress the Strata Core target against a Strata checkout
+STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
 ```
 
 This compiles every `.java` file under `corpus/cs61b-java/src/` into `build/classes/cs61b-java/`. The script uses `fd` (not `find`), so `fd` must be installed.
@@ -23,7 +26,9 @@ To run a single compiled class:
 java -cp build/classes/cs61b-java <ClassName>
 ```
 
-`check-all.sh` runs the Java compile check and `uv run scripts/check-semantics.py`.
+`check-all.sh` runs the Java compile check, `uv run scripts/check-semantics.py`,
+and the Strata Core stress check when a Strata checkout is available. Run
+`scripts/check-strata-core.sh` directly when Strata must be treated as required.
 
 ## Corpus Constraints
 
@@ -37,7 +42,7 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 
 ## Structure
 
-- `corpus/cs61b-java/src/` — the 10 standalone Java source files
+- `corpus/cs61b-java/src/` — the 50 standalone Java source files
 - `metadata/corpus.json` — source of truth: maps each file to its topic, CS 61B source probe (the Berkeley skeleton file that motivated it), and language features used
 - `semantics/cs61b-java/stack-semantics.json` — machine-readable chained semantics for every corpus method
 - `semantics/strata-core/cs61b-java/CoreSketch.core.st` — Strata Core / Boogie-like semantic target sketch
@@ -46,6 +51,7 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `docs/complications.md` — running log of constraints and decisions made while building the corpus
 - `scripts/check-java-corpus.sh` — compile-check script
 - `scripts/check-semantics.py` — semantic-chain validator
+- `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
 - `scripts/check-all.sh` — combined check script
 
 ## Adding New Corpus Files
@@ -54,8 +60,11 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 2. Add a corresponding entry to `metadata/corpus.json` with `file`, `topic`, `source_probe`, and `features` fields.
 3. Add or update semantic cards in `semantics/cs61b-java/stack-semantics.json`.
 4. Add any new Strata target procedure names to `semantics/strata-core/cs61b-java/CoreSketch.core.st`.
-5. Run `./scripts/check-all.sh` to verify the Java and semantics artifacts.
-6. If the class has a `main` method, run it and confirm it exits successfully.
+5. Run `./scripts/check-all.sh` to verify the Java, semantics, and available
+   Strata artifacts.
+6. Run `./scripts/check-strata-core.sh` with `STRATA_DIR` set when Strata must
+   be treated as a hard dependency.
+7. If the class has a `main` method, run it and confirm it exits successfully.
 
 ## Semantic Chain
 

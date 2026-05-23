@@ -3,9 +3,9 @@
 Small Java corpus for exercising [`strata-org/Strata`](https://reservoir.lean-lang.org/@strata-org/Strata)
 on CS 61B-style programs.
 
-The first corpus is intentionally conservative:
+The corpus is intentionally conservative:
 
-- 10 standalone Java files.
+- 50 standalone Java files.
 - No `throw`, `try`, `catch`, or checked/unchecked failure classes in the corpus
   sources.
 - Bounded `for` loops over integers, arrays, or strings.
@@ -31,6 +31,17 @@ To validate the Java corpus and the attached semantics stack:
 ```bash
 ./scripts/check-all.sh
 ```
+
+To stress the current Strata checkout against the generated Core target:
+
+```bash
+STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
+```
+
+If `STRATA_DIR` is omitted, the script first tries `/tmp/stratajava-Strata` and
+then `../Strata`. The check builds Strata's `strata` executable, parses the
+Core sketch, type-checks it, generates full-check verification conditions, and
+runs the available SMT solver (`cvc5` or `z3`) when present.
 
 The semantics artifacts live under `semantics/` and are described in
 `docs/semantics-stack.md`. The project white paper is kept at

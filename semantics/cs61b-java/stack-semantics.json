@@ -1,6 +1,6 @@
 {
   "semantics_stack_version": "0.1",
-  "intent": "Attach stackable semantics to each Java corpus program: source, surface summary, functional relation, operational story, verification obligations, and a Strata Core sketch target.",
+  "intent": "Attach stackable, chained semantics to each Java corpus program: source, surface summary, functional relation, operational story, verification obligations, and a Strata Core sketch target. The corpus currently has 50 buildable Java programs.",
   "semantic_chain": [
     {
       "id": "C0.source_to_surface",
@@ -114,99 +114,262 @@
       ]
     },
     {
-      "source_file": "corpus/cs61b-java/src/StarTriangleBounded.java",
-      "class": "StarTriangleBounded",
-      "program_semantics": "Nested bounded loops build a simple textual triangle. The first formal layer tracks lengths and cell counts before full string content.",
+      "source_file": "corpus/cs61b-java/src/ArrayAllPositive.java",
+      "class": "ArrayAllPositive",
+      "program_semantics": "CS61B-style sample for universal positivity check. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
       "methods": [
         {
-          "name": "lineOfStars",
-          "signature": "String lineOfStars(int width)",
+          "name": "allPositive",
+          "signature": "boolean allPositive(int[] items)",
           "layers": {
-            "surface": "Build one line containing width stars.",
-            "functional": "For width >= 0, result length is width and every character is '*'.",
-            "operational": "A bounded for loop appends one star per iteration.",
-            "verification": "Loop invariant after i iterations: builder length = i and all produced characters are stars.",
-            "strata_core": "StarTriangleBounded_lineOfStars_len"
+            "surface": "Check that every item is positive.",
+            "functional": "Result is true iff all entries are greater than zero.",
+            "operational": "A bounded loop clears ok when it finds a nonpositive value.",
+            "verification": "Invariant: ok implies every scanned value is positive.",
+            "strata_core": "ArrayAllPositive_allPositive"
           }
         },
         {
-          "name": "triangle",
-          "signature": "String triangle(int height)",
+          "name": "positiveBonus",
+          "signature": "int positiveBonus(int[] items)",
           "layers": {
-            "surface": "Build a newline-separated triangle with row widths 1 through height.",
-            "functional": "For height >= 0, result has height rows and row r has r stars.",
-            "operational": "Outer loop calls lineOfStars(row), then appends a newline except after the final row.",
-            "verification": "Outer invariant: completed prefix contains exactly rows 1..row-1.",
-            "strata_core": "StarTriangleBounded_triangle_rows"
-          }
-        },
-        {
-          "name": "triangleAreaCells",
-          "signature": "int triangleAreaCells(int height)",
-          "layers": {
-            "surface": "Count the number of star cells in a triangle.",
-            "functional": "For height >= 0, result = height * (height + 1) / 2.",
-            "operational": "A bounded for loop accumulates the current row number.",
-            "verification": "Loop invariant after row i: cells = i * (i + 1) / 2.",
-            "strata_core": "StarTriangleBounded_triangleAreaCells"
+            "surface": "Return length when all values are positive.",
+            "functional": "Result is items.length iff allPositive(items), otherwise zero.",
+            "operational": "Branches on allPositive.",
+            "verification": "Postcondition reuses allPositive summary.",
+            "strata_core": "ArrayAllPositive_positiveBonus"
           }
         }
       ]
     },
     {
-      "source_file": "corpus/cs61b-java/src/IndexedString.java",
-      "class": "IndexedString",
-      "program_semantics": "String indexing example. The first formal layer tracks reverse-index arithmetic and output shape.",
+      "source_file": "corpus/cs61b-java/src/ArrayAnyNegative.java",
+      "class": "ArrayAnyNegative",
+      "program_semantics": "CS61B-style sample for existential negativity check. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
       "methods": [
         {
-          "name": "indexed",
-          "signature": "String indexed(String text)",
+          "name": "anyNegative",
+          "signature": "boolean anyNegative(int[] items)",
           "layers": {
-            "surface": "Append each character followed by its reverse index.",
-            "functional": "For input length n, output is the concatenation of text[i] and decimal(n - i - 1) for i in 0..n-1.",
-            "operational": "A bounded loop reads charAt(i), computes reverseIndex, and appends both.",
-            "verification": "Invariant: after i iterations, output prefix encodes exactly input positions 0..i-1.",
-            "strata_core": "IndexedString_indexed_shape"
+            "surface": "Check whether any item is negative.",
+            "functional": "Result is true iff at least one entry is less than zero.",
+            "operational": "A bounded loop sets found when it sees a negative value.",
+            "verification": "Invariant: found is equivalent to a negative in the scanned prefix.",
+            "strata_core": "ArrayAnyNegative_anyNegative"
           }
         },
         {
-          "name": "digitWeight",
-          "signature": "int digitWeight(String text)",
+          "name": "negativePenalty",
+          "signature": "int negativePenalty(int[] items)",
           "layers": {
-            "surface": "Sum the reverse indices for the input string.",
-            "functional": "For length n >= 0, result = n * (n - 1) / 2.",
-            "operational": "A bounded loop accumulates n - i - 1.",
-            "verification": "Loop invariant after i iterations: total = i * (2*n - i - 1) / 2.",
-            "strata_core": "IndexedString_digitWeight"
+            "surface": "Return a penalty when a negative exists.",
+            "functional": "Result is -1 iff anyNegative(items), otherwise zero.",
+            "operational": "Branches on anyNegative.",
+            "verification": "Postcondition reuses anyNegative summary.",
+            "strata_core": "ArrayAnyNegative_negativePenalty"
           }
         }
       ]
     },
     {
-      "source_file": "corpus/cs61b-java/src/DoubleCharacters.java",
-      "class": "DoubleCharacters",
-      "program_semantics": "String traversal where each input character contributes two output characters.",
+      "source_file": "corpus/cs61b-java/src/ArrayClamp.java",
+      "class": "ArrayClamp",
+      "program_semantics": "CS61B-style sample for clamping values to an inclusive interval. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
       "methods": [
         {
-          "name": "doubleUp",
-          "signature": "String doubleUp(String text)",
+          "name": "clampValue",
+          "signature": "int clampValue(int value, int low, int high)",
           "layers": {
-            "surface": "Repeat every character twice.",
-            "functional": "For input length n, output length is 2*n and positions 2*i and 2*i+1 both equal text[i].",
-            "operational": "A bounded loop reads one character and appends it twice.",
-            "verification": "Invariant after i iterations: output length = 2*i and doubled positions are correct for prefix i.",
-            "strata_core": "DoubleCharacters_doubleUp_shape"
+            "surface": "Limit a value to an interval.",
+            "functional": "Result is low, high, or value depending on bounds.",
+            "operational": "Two conditionals select the bounded result.",
+            "verification": "Postcondition: low <= result <= high when low <= high.",
+            "strata_core": "ArrayClamp_clampValue"
           }
         },
         {
-          "name": "doubledLength",
-          "signature": "int doubledLength(String text)",
+          "name": "clampAll",
+          "signature": "int[] clampAll(int[] items, int low, int high)",
           "layers": {
-            "surface": "Return the length of doubleUp(text).",
-            "functional": "For input length n >= 0, result = 2*n.",
-            "operational": "Calls doubleUp then reads the resulting length.",
-            "verification": "Caller postcondition follows from doubleUp length summary.",
-            "strata_core": "DoubleCharacters_doubledLength"
+            "surface": "Clamp every array element.",
+            "functional": "result[i] = clampValue(items[i], low, high).",
+            "operational": "A bounded loop calls clampValue.",
+            "verification": "Invariant: output prefix is pointwise clamped.",
+            "strata_core": "ArrayClamp_clampAll"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayCopy.java",
+      "class": "ArrayCopy",
+      "program_semantics": "CS61B-style sample for copying arrays without aliasing the input. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "copy",
+          "signature": "int[] copy(int[] items)",
+          "layers": {
+            "surface": "Return a same-length array with the same values.",
+            "functional": "For every index i, result[i] = items[i].",
+            "operational": "Allocates a new array and fills it with a bounded loop.",
+            "verification": "Invariant: copied prefix matches the input prefix.",
+            "strata_core": "ArrayCopy_copy"
+          }
+        },
+        {
+          "name": "copyAndSum",
+          "signature": "int copyAndSum(int[] items)",
+          "layers": {
+            "surface": "Sum a copied array.",
+            "functional": "Result equals the sum of the original values.",
+            "operational": "Calls copy, then sums the copy.",
+            "verification": "Postcondition reuses copy extensional equality.",
+            "strata_core": "ArrayCopy_copyAndSum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayCountTarget.java",
+      "class": "ArrayCountTarget",
+      "program_semantics": "CS61B-style sample for counting target occurrences. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "countTarget",
+          "signature": "int countTarget(int[] items, int target)",
+          "layers": {
+            "surface": "Count target occurrences.",
+            "functional": "Result is the number of indices equal to target.",
+            "operational": "A bounded loop conditionally increments.",
+            "verification": "Invariant: count is target occurrences in the scanned prefix.",
+            "strata_core": "ArrayCountTarget_countTarget"
+          }
+        },
+        {
+          "name": "appearsExactlyOnce",
+          "signature": "boolean appearsExactlyOnce(int[] items, int target)",
+          "layers": {
+            "surface": "Check whether target appears once.",
+            "functional": "Result is true iff countTarget is one.",
+            "operational": "Calls countTarget and compares.",
+            "verification": "Postcondition reuses countTarget summary.",
+            "strata_core": "ArrayCountTarget_appearsExactlyOnce"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayFirstIndex.java",
+      "class": "ArrayFirstIndex",
+      "program_semantics": "CS61B-style sample for linear search for first index. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "firstIndexOf",
+          "signature": "int firstIndexOf(int[] items, int target)",
+          "layers": {
+            "surface": "Find the first target index or -1.",
+            "functional": "Result is the least matching index, or -1 if none exists.",
+            "operational": "A bounded loop records the first match and preserves it.",
+            "verification": "Invariant: found is -1 or the first match in the scanned prefix.",
+            "strata_core": "ArrayFirstIndex_firstIndexOf"
+          }
+        },
+        {
+          "name": "contains",
+          "signature": "boolean contains(int[] items, int target)",
+          "layers": {
+            "surface": "Check membership using firstIndexOf.",
+            "functional": "Result is true iff firstIndexOf returns a nonnegative index.",
+            "operational": "Calls firstIndexOf and compares.",
+            "verification": "Postcondition reuses firstIndexOf summary.",
+            "strata_core": "ArrayFirstIndex_contains"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayInterleave.java",
+      "class": "ArrayInterleave",
+      "program_semantics": "CS61B-style sample for interleaving two equal-length arrays. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "interleave",
+          "signature": "int[] interleave(int[] left, int[] right)",
+          "layers": {
+            "surface": "Alternate values from two arrays.",
+            "functional": "result[2*i] = left[i] and result[2*i+1] = right[i].",
+            "operational": "A bounded loop writes two output slots per input index.",
+            "verification": "Invariant: output prefix contains interleaved pairs for scanned indices.",
+            "strata_core": "ArrayInterleave_interleave"
+          }
+        },
+        {
+          "name": "interleavedLength",
+          "signature": "int interleavedLength(int[] left, int[] right)",
+          "layers": {
+            "surface": "Return the length of the interleaved output.",
+            "functional": "Result is 2 * left.length.",
+            "operational": "Calls interleave and reads length.",
+            "verification": "Postcondition reuses interleave length summary.",
+            "strata_core": "ArrayInterleave_interleavedLength"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayIsSorted.java",
+      "class": "ArrayIsSorted",
+      "program_semantics": "CS61B-style sample for checking nondecreasing array order. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isSorted",
+          "signature": "boolean isSorted(int[] items)",
+          "layers": {
+            "surface": "Check nondecreasing order.",
+            "functional": "Result is true iff adjacent pairs are ordered.",
+            "operational": "A bounded loop compares each adjacent pair.",
+            "verification": "Invariant: sorted means every scanned adjacent pair is ordered.",
+            "strata_core": "ArrayIsSorted_isSorted"
+          }
+        },
+        {
+          "name": "sortedScore",
+          "signature": "int sortedScore(int[] items)",
+          "layers": {
+            "surface": "Score an array based on sortedness.",
+            "functional": "Result is length for sorted input and negative length otherwise.",
+            "operational": "Branches on isSorted.",
+            "verification": "Postcondition reuses isSorted summary.",
+            "strata_core": "ArrayIsSorted_sortedScore"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayLastIndex.java",
+      "class": "ArrayLastIndex",
+      "program_semantics": "CS61B-style sample for linear search for last index. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "lastIndexOf",
+          "signature": "int lastIndexOf(int[] items, int target)",
+          "layers": {
+            "surface": "Find the last target index or -1.",
+            "functional": "Result is the greatest matching index, or -1 if none exists.",
+            "operational": "A bounded loop overwrites found at every match.",
+            "verification": "Invariant: found is the last match in the scanned prefix.",
+            "strata_core": "ArrayLastIndex_lastIndexOf"
+          }
+        },
+        {
+          "name": "distanceBetweenFirstAndLast",
+          "signature": "int distanceBetweenFirstAndLast(int[] items, int target)",
+          "layers": {
+            "surface": "Compute the gap between first and last target occurrence.",
+            "functional": "Result is lastIndexOf(items,target) - firstIndexOf(items,target).",
+            "operational": "Calls firstIndexOf and lastIndexOf.",
+            "verification": "Postcondition reuses both search summaries.",
+            "strata_core": "ArrayLastIndex_distanceBetweenFirstAndLast"
           }
         }
       ]
@@ -263,52 +426,360 @@
       ]
     },
     {
-      "source_file": "corpus/cs61b-java/src/EvenFilterArray.java",
-      "class": "EvenFilterArray",
-      "program_semantics": "Two-pass array filter: first count matching elements, then construct an output array.",
+      "source_file": "corpus/cs61b-java/src/ArrayNegativeCount.java",
+      "class": "ArrayNegativeCount",
+      "program_semantics": "CS61B-style sample for counting negative values in an array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
       "methods": [
         {
-          "name": "isEven",
-          "signature": "boolean isEven(int value)",
+          "name": "isNegative",
+          "signature": "boolean isNegative(int value)",
           "layers": {
-            "surface": "Test divisibility by two.",
-            "functional": "result is true iff value mod 2 = 0.",
-            "operational": "Single return step using remainder.",
-            "verification": "Postcondition result == (value % 2 == 0).",
-            "strata_core": "EvenFilterArray_isEven"
+            "surface": "Test whether a number is negative.",
+            "functional": "Result is true iff value < 0.",
+            "operational": "Single comparison return.",
+            "verification": "Postcondition equates result with the comparison.",
+            "strata_core": "ArrayNegativeCount_isNegative"
           }
         },
         {
-          "name": "countEvens",
-          "signature": "int countEvens(int[] items)",
+          "name": "countNegative",
+          "signature": "int countNegative(int[] items)",
           "layers": {
-            "surface": "Count even values in an array.",
-            "functional": "result equals the number of indices i where items[i] is even.",
-            "operational": "A bounded loop increments count only when isEven(items[i]) is true.",
-            "verification": "Invariant after i iterations: count equals the number of even values in items[0..i-1].",
-            "strata_core": "EvenFilterArray_countEvens"
+            "surface": "Count negative array values.",
+            "functional": "Result is the number of indices containing negative values.",
+            "operational": "A bounded loop calls isNegative and conditionally increments.",
+            "verification": "Invariant: count matches negatives in the scanned prefix.",
+            "strata_core": "ArrayNegativeCount_countNegative"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayPairwiseDiff.java",
+      "class": "ArrayPairwiseDiff",
+      "program_semantics": "CS61B-style sample for pairwise adjacent differences. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "differences",
+          "signature": "int[] differences(int[] items)",
+          "layers": {
+            "surface": "Return adjacent differences.",
+            "functional": "result[i] = items[i + 1] - items[i].",
+            "operational": "A bounded loop writes one adjacent difference per output index.",
+            "verification": "Invariant: output prefix contains correct adjacent differences.",
+            "strata_core": "ArrayPairwiseDiff_differences"
           }
         },
         {
-          "name": "evens",
-          "signature": "int[] evens(int[] items)",
+          "name": "firstDifference",
+          "signature": "int firstDifference(int[] items)",
           "layers": {
-            "surface": "Return a new array containing exactly the even values in order.",
-            "functional": "Output length is countEvens(items), every output item is even, and order is inherited from input.",
-            "operational": "First pass allocates exact length, second pass writes matching values left to right.",
-            "verification": "Invariant: output prefix contains exactly the even values from the scanned input prefix.",
-            "strata_core": "EvenFilterArray_evens_shape"
+            "surface": "Return the first adjacent difference.",
+            "functional": "Result is items[1] - items[0].",
+            "operational": "Calls differences then reads index zero.",
+            "verification": "Postcondition reuses differences summary.",
+            "strata_core": "ArrayPairwiseDiff_firstDifference"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayPositiveCount.java",
+      "class": "ArrayPositiveCount",
+      "program_semantics": "CS61B-style sample for counting positive values in an array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isPositive",
+          "signature": "boolean isPositive(int value)",
+          "layers": {
+            "surface": "Test whether a number is positive.",
+            "functional": "Result is true iff value > 0.",
+            "operational": "Single comparison return.",
+            "verification": "Postcondition equates result with the comparison.",
+            "strata_core": "ArrayPositiveCount_isPositive"
           }
         },
         {
-          "name": "sum",
-          "signature": "int sum(int[] items)",
+          "name": "countPositive",
+          "signature": "int countPositive(int[] items)",
           "layers": {
-            "surface": "Sum all integers in an array.",
-            "functional": "result is the finite sum of all array elements.",
-            "operational": "A bounded loop accumulates total += items[i].",
-            "verification": "Invariant after i iterations: total equals sum(items[0..i-1]).",
-            "strata_core": "EvenFilterArray_sum"
+            "surface": "Count positive array values.",
+            "functional": "Result is the number of indices containing positive values.",
+            "operational": "A bounded loop calls isPositive and conditionally increments.",
+            "verification": "Invariant: count matches positives in the scanned prefix.",
+            "strata_core": "ArrayPositiveCount_countPositive"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayPrefixSums.java",
+      "class": "ArrayPrefixSums",
+      "program_semantics": "CS61B-style sample for prefix sums over an integer array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "prefixSums",
+          "signature": "int[] prefixSums(int[] items)",
+          "layers": {
+            "surface": "Return running totals.",
+            "functional": "result[i] equals the sum of items[0..i].",
+            "operational": "A bounded loop updates total then writes it.",
+            "verification": "Invariant: result prefix stores all completed running sums.",
+            "strata_core": "ArrayPrefixSums_prefixSums"
+          }
+        },
+        {
+          "name": "finalPrefix",
+          "signature": "int finalPrefix(int[] items)",
+          "layers": {
+            "surface": "Return the last prefix sum.",
+            "functional": "For nonempty input, result is the sum of all items.",
+            "operational": "Calls prefixSums then reads the final element.",
+            "verification": "Postcondition reuses prefixSums summary.",
+            "strata_core": "ArrayPrefixSums_finalPrefix"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayRangeSum.java",
+      "class": "ArrayRangeSum",
+      "program_semantics": "CS61B-style sample for bounded range sum over an integer array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "sumRange",
+          "signature": "int sumRange(int[] items, int start, int end)",
+          "layers": {
+            "surface": "Sum a half-open array range.",
+            "functional": "Result is the finite sum of items[start..end-1].",
+            "operational": "A bounded for loop accumulates one item per index.",
+            "verification": "Loop invariant: total is the sum of the scanned prefix.",
+            "strata_core": "ArrayRangeSum_sumRange"
+          }
+        },
+        {
+          "name": "sumAll",
+          "signature": "int sumAll(int[] items)",
+          "layers": {
+            "surface": "Sum a whole array by delegating to sumRange.",
+            "functional": "Result is the finite sum of all array elements.",
+            "operational": "Calls sumRange with the full index range.",
+            "verification": "Postcondition reuses the sumRange summary.",
+            "strata_core": "ArrayRangeSum_sumAll"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayReplaceTarget.java",
+      "class": "ArrayReplaceTarget",
+      "program_semantics": "CS61B-style sample for copying with target replacement. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "replace",
+          "signature": "int[] replace(int[] items, int target, int replacement)",
+          "layers": {
+            "surface": "Replace each target value in a copy.",
+            "functional": "Each output index is replacement when input equals target, otherwise the original value.",
+            "operational": "A bounded loop branches per element.",
+            "verification": "Invariant: output prefix follows the replacement relation.",
+            "strata_core": "ArrayReplaceTarget_replace"
+          }
+        },
+        {
+          "name": "replacedCount",
+          "signature": "int replacedCount(int[] items, int target, int replacement)",
+          "layers": {
+            "surface": "Count replacement values after replacing.",
+            "functional": "Result counts replacement in replace(items,target,replacement).",
+            "operational": "Calls replace then countTarget.",
+            "verification": "Postcondition reuses replace and countTarget summaries.",
+            "strata_core": "ArrayReplaceTarget_replacedCount"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayReverseCopy.java",
+      "class": "ArrayReverseCopy",
+      "program_semantics": "CS61B-style sample for reversing an array into a new output. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "reverseCopy",
+          "signature": "int[] reverseCopy(int[] items)",
+          "layers": {
+            "surface": "Return a reversed copy of the input.",
+            "functional": "For every index i, result[i] = items[length - i - 1].",
+            "operational": "A bounded loop writes mirrored indices.",
+            "verification": "Invariant: written output prefix equals the corresponding reversed input suffix.",
+            "strata_core": "ArrayReverseCopy_reverseCopy"
+          }
+        },
+        {
+          "name": "firstAfterReverse",
+          "signature": "int firstAfterReverse(int[] items)",
+          "layers": {
+            "surface": "Read the first item of the reversed copy.",
+            "functional": "For nonempty input, result is the last input element.",
+            "operational": "Calls reverseCopy then indexes zero.",
+            "verification": "Postcondition reuses reverseCopy shape.",
+            "strata_core": "ArrayReverseCopy_firstAfterReverse"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayRotateLeft.java",
+      "class": "ArrayRotateLeft",
+      "program_semantics": "CS61B-style sample for left rotation of an integer array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "rotateLeftOne",
+          "signature": "int[] rotateLeftOne(int[] items)",
+          "layers": {
+            "surface": "Move every element one position left and wrap the first value to the end.",
+            "functional": "For nonempty input, result[i] = items[i + 1] except the last result is items[0].",
+            "operational": "A bounded loop branches on the last index.",
+            "verification": "Invariant: output prefix follows the left-rotation relation.",
+            "strata_core": "ArrayRotateLeft_rotateLeftOne"
+          }
+        },
+        {
+          "name": "rotatedFirst",
+          "signature": "int rotatedFirst(int[] items)",
+          "layers": {
+            "surface": "Return the first value after a left rotation.",
+            "functional": "For length > 1, result is items[1].",
+            "operational": "Calls rotateLeftOne then reads index zero.",
+            "verification": "Postcondition reuses rotateLeftOne shape.",
+            "strata_core": "ArrayRotateLeft_rotatedFirst"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayScale.java",
+      "class": "ArrayScale",
+      "program_semantics": "CS61B-style sample for scaling every value in an array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "scale",
+          "signature": "int[] scale(int[] items, int factor)",
+          "layers": {
+            "surface": "Multiply every array element by a factor.",
+            "functional": "For every index i, result[i] = items[i] * factor.",
+            "operational": "A bounded loop writes scaled values.",
+            "verification": "Invariant: output prefix equals scaled input prefix.",
+            "strata_core": "ArrayScale_scale"
+          }
+        },
+        {
+          "name": "scaledSum",
+          "signature": "int scaledSum(int[] items, int factor)",
+          "layers": {
+            "surface": "Sum the scaled array.",
+            "functional": "Result is factor times the sum of input values.",
+            "operational": "Calls scale then sums.",
+            "verification": "Postcondition reuses scale element relation.",
+            "strata_core": "ArrayScale_scaledSum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayWeightedSum.java",
+      "class": "ArrayWeightedSum",
+      "program_semantics": "CS61B-style sample for weighted index sum over an integer array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "weightedSum",
+          "signature": "int weightedSum(int[] items)",
+          "layers": {
+            "surface": "Multiply each value by its one-based index and sum.",
+            "functional": "Result is sum(items[i] * (i + 1)).",
+            "operational": "A bounded loop accumulates weighted terms.",
+            "verification": "Loop invariant: total is the weighted sum of the scanned prefix.",
+            "strata_core": "ArrayWeightedSum_weightedSum"
+          }
+        },
+        {
+          "name": "weightedDifference",
+          "signature": "int weightedDifference(int[] left, int[] right)",
+          "layers": {
+            "surface": "Compare two weighted sums.",
+            "functional": "Result is weightedSum(left) - weightedSum(right).",
+            "operational": "Calls weightedSum twice and subtracts.",
+            "verification": "Postcondition reuses weightedSum summaries.",
+            "strata_core": "ArrayWeightedSum_weightedDifference"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/ArrayZeroCount.java",
+      "class": "ArrayZeroCount",
+      "program_semantics": "CS61B-style sample for counting zero values in an array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isZero",
+          "signature": "boolean isZero(int value)",
+          "layers": {
+            "surface": "Test whether a number is zero.",
+            "functional": "Result is true iff value == 0.",
+            "operational": "Single equality return.",
+            "verification": "Postcondition equates result with the comparison.",
+            "strata_core": "ArrayZeroCount_isZero"
+          }
+        },
+        {
+          "name": "countZero",
+          "signature": "int countZero(int[] items)",
+          "layers": {
+            "surface": "Count zero array values.",
+            "functional": "Result is the number of zero entries.",
+            "operational": "A bounded loop calls isZero and conditionally increments.",
+            "verification": "Invariant: count matches zero entries in the scanned prefix.",
+            "strata_core": "ArrayZeroCount_countZero"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/BoundedCollatz.java",
+      "class": "BoundedCollatz",
+      "program_semantics": "Branch-heavy transition system with an explicit step fuel bound.",
+      "methods": [
+        {
+          "name": "nextNumber",
+          "signature": "int nextNumber(int n)",
+          "layers": {
+            "surface": "Compute the next Collatz value.",
+            "functional": "If n is even, result = n / 2; otherwise result = 3*n + 1.",
+            "operational": "One conditional branch based on n % 2.",
+            "verification": "Postcondition is a two-case branch on parity.",
+            "strata_core": "BoundedCollatz_nextNumber"
+          }
+        },
+        {
+          "name": "stepsUntilOne",
+          "signature": "int stepsUntilOne(int start, int maxSteps)",
+          "layers": {
+            "surface": "Run Collatz until one or until fuel is exhausted.",
+            "functional": "For maxSteps >= 0, result is the first k <= maxSteps such that iter(start, k) = 1, or maxSteps if none is reached earlier.",
+            "operational": "A bounded for loop checks value == 1 before each transition.",
+            "verification": "Invariant: after i iterations, value = iter(start, i) and steps = i unless an early return happened.",
+            "strata_core": "BoundedCollatz_stepsUntilOne"
+          }
+        },
+        {
+          "name": "valueAfterSteps",
+          "signature": "int valueAfterSteps(int start, int maxSteps)",
+          "layers": {
+            "surface": "Return the Collatz value after bounded fuel or after reaching one.",
+            "functional": "For maxSteps >= 0, result = iter(start, k) where k is min(maxSteps, first step reaching one).",
+            "operational": "A bounded for loop updates value with nextNumber unless value is already one.",
+            "verification": "Invariant: current value is the iterated transition from start for the number of completed steps.",
+            "strata_core": "BoundedCollatz_valueAfterSteps"
           }
         }
       ]
@@ -365,6 +836,434 @@
       ]
     },
     {
+      "source_file": "corpus/cs61b-java/src/DoubleCharacters.java",
+      "class": "DoubleCharacters",
+      "program_semantics": "String traversal where each input character contributes two output characters.",
+      "methods": [
+        {
+          "name": "doubleUp",
+          "signature": "String doubleUp(String text)",
+          "layers": {
+            "surface": "Repeat every character twice.",
+            "functional": "For input length n, output length is 2*n and positions 2*i and 2*i+1 both equal text[i].",
+            "operational": "A bounded loop reads one character and appends it twice.",
+            "verification": "Invariant after i iterations: output length = 2*i and doubled positions are correct for prefix i.",
+            "strata_core": "DoubleCharacters_doubleUp_shape"
+          }
+        },
+        {
+          "name": "doubledLength",
+          "signature": "int doubledLength(String text)",
+          "layers": {
+            "surface": "Return the length of doubleUp(text).",
+            "functional": "For input length n >= 0, result = 2*n.",
+            "operational": "Calls doubleUp then reads the resulting length.",
+            "verification": "Caller postcondition follows from doubleUp length summary.",
+            "strata_core": "DoubleCharacters_doubledLength"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/EvenFilterArray.java",
+      "class": "EvenFilterArray",
+      "program_semantics": "Two-pass array filter: first count matching elements, then construct an output array.",
+      "methods": [
+        {
+          "name": "isEven",
+          "signature": "boolean isEven(int value)",
+          "layers": {
+            "surface": "Test divisibility by two.",
+            "functional": "result is true iff value mod 2 = 0.",
+            "operational": "Single return step using remainder.",
+            "verification": "Postcondition result == (value % 2 == 0).",
+            "strata_core": "EvenFilterArray_isEven"
+          }
+        },
+        {
+          "name": "countEvens",
+          "signature": "int countEvens(int[] items)",
+          "layers": {
+            "surface": "Count even values in an array.",
+            "functional": "result equals the number of indices i where items[i] is even.",
+            "operational": "A bounded loop increments count only when isEven(items[i]) is true.",
+            "verification": "Invariant after i iterations: count equals the number of even values in items[0..i-1].",
+            "strata_core": "EvenFilterArray_countEvens"
+          }
+        },
+        {
+          "name": "evens",
+          "signature": "int[] evens(int[] items)",
+          "layers": {
+            "surface": "Return a new array containing exactly the even values in order.",
+            "functional": "Output length is countEvens(items), every output item is even, and order is inherited from input.",
+            "operational": "First pass allocates exact length, second pass writes matching values left to right.",
+            "verification": "Invariant: output prefix contains exactly the even values from the scanned input prefix.",
+            "strata_core": "EvenFilterArray_evens_shape"
+          }
+        },
+        {
+          "name": "sum",
+          "signature": "int sum(int[] items)",
+          "layers": {
+            "surface": "Sum all integers in an array.",
+            "functional": "result is the finite sum of all array elements.",
+            "operational": "A bounded loop accumulates total += items[i].",
+            "verification": "Invariant after i iterations: total equals sum(items[0..i-1]).",
+            "strata_core": "EvenFilterArray_sum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/IndexedString.java",
+      "class": "IndexedString",
+      "program_semantics": "String indexing example. The first formal layer tracks reverse-index arithmetic and output shape.",
+      "methods": [
+        {
+          "name": "indexed",
+          "signature": "String indexed(String text)",
+          "layers": {
+            "surface": "Append each character followed by its reverse index.",
+            "functional": "For input length n, output is the concatenation of text[i] and decimal(n - i - 1) for i in 0..n-1.",
+            "operational": "A bounded loop reads charAt(i), computes reverseIndex, and appends both.",
+            "verification": "Invariant: after i iterations, output prefix encodes exactly input positions 0..i-1.",
+            "strata_core": "IndexedString_indexed_shape"
+          }
+        },
+        {
+          "name": "digitWeight",
+          "signature": "int digitWeight(String text)",
+          "layers": {
+            "surface": "Sum the reverse indices for the input string.",
+            "functional": "For length n >= 0, result = n * (n - 1) / 2.",
+            "operational": "A bounded loop accumulates n - i - 1.",
+            "verification": "Loop invariant after i iterations: total = i * (2*n - i - 1) / 2.",
+            "strata_core": "IndexedString_digitWeight"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/MatrixAdd.java",
+      "class": "MatrixAdd",
+      "program_semantics": "CS61B-style sample for pointwise matrix addition. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "add",
+          "signature": "int[][] add(int[][] left, int[][] right)",
+          "layers": {
+            "surface": "Add two matrices pointwise.",
+            "functional": "result[row][col] = left[row][col] + right[row][col].",
+            "operational": "Nested bounded loops write pointwise sums.",
+            "verification": "Invariant: completed cells satisfy pointwise addition.",
+            "strata_core": "MatrixAdd_add"
+          }
+        },
+        {
+          "name": "topLeftSum",
+          "signature": "int topLeftSum(int[][] left, int[][] right)",
+          "layers": {
+            "surface": "Read the top-left pointwise sum.",
+            "functional": "Result is left[0][0] + right[0][0].",
+            "operational": "Calls add then reads [0][0].",
+            "verification": "Postcondition reuses add summary.",
+            "strata_core": "MatrixAdd_topLeftSum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/MatrixColumnSums.java",
+      "class": "MatrixColumnSums",
+      "program_semantics": "CS61B-style sample for column sums of a rectangular matrix. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "columnSums",
+          "signature": "int[] columnSums(int[][] matrix)",
+          "layers": {
+            "surface": "Compute one sum per matrix column.",
+            "functional": "result[col] is the finite sum of matrix rows at that column.",
+            "operational": "Nested bounded loops accumulate each column.",
+            "verification": "Outer invariant: completed columns have correct sums; inner invariant: total is current column prefix sum.",
+            "strata_core": "MatrixColumnSums_columnSums"
+          }
+        },
+        {
+          "name": "firstColumnSum",
+          "signature": "int firstColumnSum(int[][] matrix)",
+          "layers": {
+            "surface": "Return the first column sum.",
+            "functional": "Result is sum over matrix[row][0].",
+            "operational": "Calls columnSums then indexes zero.",
+            "verification": "Postcondition reuses columnSums summary.",
+            "strata_core": "MatrixColumnSums_firstColumnSum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/MatrixMax.java",
+      "class": "MatrixMax",
+      "program_semantics": "CS61B-style sample for maximum value in a matrix. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "max",
+          "signature": "int max(int[][] matrix)",
+          "layers": {
+            "surface": "Find the maximum matrix value.",
+            "functional": "Result is an entry greater than or equal to every entry.",
+            "operational": "Nested bounded loops update best on larger values.",
+            "verification": "Invariant: best is the maximum over scanned cells.",
+            "strata_core": "MatrixMax_max"
+          }
+        },
+        {
+          "name": "firstIsMax",
+          "signature": "boolean firstIsMax(int[][] matrix)",
+          "layers": {
+            "surface": "Check whether the first cell is maximal.",
+            "functional": "Result is true iff matrix[0][0] equals max(matrix).",
+            "operational": "Calls max and compares.",
+            "verification": "Postcondition reuses max summary.",
+            "strata_core": "MatrixMax_firstIsMax"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/MatrixRowSums.java",
+      "class": "MatrixRowSums",
+      "program_semantics": "CS61B-style sample for row sums of a rectangular matrix. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "rowSums",
+          "signature": "int[] rowSums(int[][] matrix)",
+          "layers": {
+            "surface": "Compute one sum per matrix row.",
+            "functional": "result[row] is the finite sum of matrix[row].",
+            "operational": "Nested bounded loops accumulate each row.",
+            "verification": "Outer invariant: completed rows have correct sums; inner invariant: total is current row prefix sum.",
+            "strata_core": "MatrixRowSums_rowSums"
+          }
+        },
+        {
+          "name": "firstRowSum",
+          "signature": "int firstRowSum(int[][] matrix)",
+          "layers": {
+            "surface": "Return the first row sum.",
+            "functional": "Result is sum(matrix[0]).",
+            "operational": "Calls rowSums then indexes zero.",
+            "verification": "Postcondition reuses rowSums summary.",
+            "strata_core": "MatrixRowSums_firstRowSum"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/MatrixTrace.java",
+      "class": "MatrixTrace",
+      "program_semantics": "CS61B-style sample for trace of a square matrix. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "trace",
+          "signature": "int trace(int[][] matrix)",
+          "layers": {
+            "surface": "Sum the diagonal entries.",
+            "functional": "Result is sum(matrix[i][i]).",
+            "operational": "A bounded loop reads diagonal cells.",
+            "verification": "Invariant: total is the diagonal sum for scanned rows.",
+            "strata_core": "MatrixTrace_trace"
+          }
+        },
+        {
+          "name": "tracePlusSize",
+          "signature": "int tracePlusSize(int[][] matrix)",
+          "layers": {
+            "surface": "Add matrix size to its trace.",
+            "functional": "Result is trace(matrix) + matrix.length.",
+            "operational": "Calls trace and adds length.",
+            "verification": "Postcondition reuses trace summary.",
+            "strata_core": "MatrixTrace_tracePlusSize"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberDigitSum.java",
+      "class": "NumberDigitSum",
+      "program_semantics": "CS61B-style sample for digit sum with bounded decimal places. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "digitSumUpToSix",
+          "signature": "int digitSumUpToSix(int value)",
+          "layers": {
+            "surface": "Sum up to six decimal digits.",
+            "functional": "Result is the sum of six low-order base-10 digits.",
+            "operational": "A fixed six-iteration loop extracts one digit per step.",
+            "verification": "Invariant: total is the sum of digits already extracted.",
+            "strata_core": "NumberDigitSum_digitSumUpToSix"
+          }
+        },
+        {
+          "name": "digitSumEven",
+          "signature": "boolean digitSumEven(int value)",
+          "layers": {
+            "surface": "Check parity of the bounded digit sum.",
+            "functional": "Result is true iff digitSumUpToSix(value) is even.",
+            "operational": "Calls digitSumUpToSix and checks parity.",
+            "verification": "Postcondition reuses digitSumUpToSix summary.",
+            "strata_core": "NumberDigitSum_digitSumEven"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberDivisorCount.java",
+      "class": "NumberDivisorCount",
+      "program_semantics": "CS61B-style sample for counting positive divisors. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "divisorCount",
+          "signature": "int divisorCount(int n)",
+          "layers": {
+            "surface": "Count positive divisors up to n.",
+            "functional": "Result is the number of d in 1..n such that d divides n.",
+            "operational": "A bounded loop conditionally increments on divisibility.",
+            "verification": "Invariant: count is divisors in the scanned range.",
+            "strata_core": "NumberDivisorCount_divisorCount"
+          }
+        },
+        {
+          "name": "hasTwoDivisors",
+          "signature": "boolean hasTwoDivisors(int n)",
+          "layers": {
+            "surface": "Check whether exactly two divisors exist.",
+            "functional": "Result is true iff divisorCount(n) is two.",
+            "operational": "Calls divisorCount and compares.",
+            "verification": "Postcondition reuses divisorCount summary.",
+            "strata_core": "NumberDivisorCount_hasTwoDivisors"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberFactorialBounded.java",
+      "class": "NumberFactorialBounded",
+      "program_semantics": "CS61B-style sample for factorial by bounded multiplication. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "factorial",
+          "signature": "int factorial(int n)",
+          "layers": {
+            "surface": "Compute n factorial for nonnegative n.",
+            "functional": "Result is the product of integers 2..n.",
+            "operational": "A bounded for loop multiplies the accumulator.",
+            "verification": "Invariant after i: result is product 2..i-1.",
+            "strata_core": "NumberFactorialBounded_factorial"
+          }
+        },
+        {
+          "name": "factorialPlusOne",
+          "signature": "int factorialPlusOne(int n)",
+          "layers": {
+            "surface": "Add one to factorial.",
+            "functional": "Result is factorial(n) + 1.",
+            "operational": "Calls factorial and adds one.",
+            "verification": "Postcondition reuses factorial summary.",
+            "strata_core": "NumberFactorialBounded_factorialPlusOne"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberFibonacciBounded.java",
+      "class": "NumberFibonacciBounded",
+      "program_semantics": "CS61B-style sample for iterative Fibonacci computation. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "fibonacci",
+          "signature": "int fibonacci(int n)",
+          "layers": {
+            "surface": "Compute the nth Fibonacci number iteratively.",
+            "functional": "For n >= 0, result is Fib(n).",
+            "operational": "A bounded loop advances previous/current state.",
+            "verification": "Invariant: previous = Fib(i) and current = Fib(i + 1).",
+            "strata_core": "NumberFibonacciBounded_fibonacci"
+          }
+        },
+        {
+          "name": "fibonacciIsEven",
+          "signature": "boolean fibonacciIsEven(int n)",
+          "layers": {
+            "surface": "Check parity of Fibonacci output.",
+            "functional": "Result is true iff fibonacci(n) is even.",
+            "operational": "Calls fibonacci and checks parity.",
+            "verification": "Postcondition reuses fibonacci summary.",
+            "strata_core": "NumberFibonacciBounded_fibonacciIsEven"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberGcdByScan.java",
+      "class": "NumberGcdByScan",
+      "program_semantics": "CS61B-style sample for greatest common divisor by bounded scan. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "gcdByScan",
+          "signature": "int gcdByScan(int a, int b)",
+          "layers": {
+            "surface": "Find the greatest common divisor by scanning candidates.",
+            "functional": "Result is the largest d <= min(a,b) dividing both inputs.",
+            "operational": "A bounded loop overwrites best on common divisors.",
+            "verification": "Invariant: best is the largest common divisor seen so far.",
+            "strata_core": "NumberGcdByScan_gcdByScan"
+          }
+        },
+        {
+          "name": "relativelyPrime",
+          "signature": "boolean relativelyPrime(int a, int b)",
+          "layers": {
+            "surface": "Check whether gcd is one.",
+            "functional": "Result is true iff gcdByScan(a,b) == 1.",
+            "operational": "Calls gcdByScan and compares.",
+            "verification": "Postcondition reuses gcdByScan summary.",
+            "strata_core": "NumberGcdByScan_relativelyPrime"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/NumberIsPrimeBounded.java",
+      "class": "NumberIsPrimeBounded",
+      "program_semantics": "CS61B-style sample for bounded primality check by trial division. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isPrime",
+          "signature": "boolean isPrime(int n)",
+          "layers": {
+            "surface": "Check whether n is prime by bounded trial division.",
+            "functional": "Result is true iff n >= 2 and no divisor d in 2..n-1 divides n.",
+            "operational": "A bounded loop clears prime when it finds a divisor.",
+            "verification": "Invariant: prime means no scanned divisor divides n.",
+            "strata_core": "NumberIsPrimeBounded_isPrime"
+          }
+        },
+        {
+          "name": "primeBonus",
+          "signature": "int primeBonus(int n)",
+          "layers": {
+            "surface": "Return n only when prime.",
+            "functional": "Result is n iff isPrime(n), otherwise zero.",
+            "operational": "Branches on isPrime.",
+            "verification": "Postcondition reuses isPrime summary.",
+            "strata_core": "NumberIsPrimeBounded_primeBonus"
+          }
+        }
+      ]
+    },
+    {
       "source_file": "corpus/cs61b-java/src/OccurrenceCounts.java",
       "class": "OccurrenceCounts",
       "program_semantics": "Counting word and character occurrences with bounded loops.",
@@ -405,41 +1304,324 @@
       ]
     },
     {
-      "source_file": "corpus/cs61b-java/src/BoundedCollatz.java",
-      "class": "BoundedCollatz",
-      "program_semantics": "Branch-heavy transition system with an explicit step fuel bound.",
+      "source_file": "corpus/cs61b-java/src/SelectionSortCopy.java",
+      "class": "SelectionSortCopy",
+      "program_semantics": "CS61B-style sample for selection sort into a copied array. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
       "methods": [
         {
-          "name": "nextNumber",
-          "signature": "int nextNumber(int n)",
+          "name": "sortedCopy",
+          "signature": "int[] sortedCopy(int[] items)",
           "layers": {
-            "surface": "Compute the next Collatz value.",
-            "functional": "If n is even, result = n / 2; otherwise result = 3*n + 1.",
-            "operational": "One conditional branch based on n % 2.",
-            "verification": "Postcondition is a two-case branch on parity.",
-            "strata_core": "BoundedCollatz_nextNumber"
+            "surface": "Return a sorted copy using selection sort.",
+            "functional": "Output is sorted and is a permutation of input.",
+            "operational": "Nested bounded loops select a minimum and swap.",
+            "verification": "Invariant: prefix before i is sorted and contains the i smallest values.",
+            "strata_core": "SelectionSortCopy_sortedCopy"
           }
         },
         {
-          "name": "stepsUntilOne",
-          "signature": "int stepsUntilOne(int start, int maxSteps)",
+          "name": "smallest",
+          "signature": "int smallest(int[] items)",
           "layers": {
-            "surface": "Run Collatz until one or until fuel is exhausted.",
-            "functional": "For maxSteps >= 0, result is the first k <= maxSteps such that iter(start, k) = 1, or maxSteps if none is reached earlier.",
-            "operational": "A bounded for loop checks value == 1 before each transition.",
-            "verification": "Invariant: after i iterations, value = iter(start, i) and steps = i unless an early return happened.",
-            "strata_core": "BoundedCollatz_stepsUntilOne"
+            "surface": "Return the smallest value via sortedCopy.",
+            "functional": "For nonempty input, result is the minimum input value.",
+            "operational": "Calls sortedCopy then reads index zero.",
+            "verification": "Postcondition reuses sortedCopy sortedness/permutation facts.",
+            "strata_core": "SelectionSortCopy_smallest"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StackArrayCounter.java",
+      "class": "StackArrayCounter",
+      "program_semantics": "CS61B-style sample for small bounded array-backed stack counter. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "push",
+          "signature": "boolean push(int value)",
+          "layers": {
+            "surface": "Push a value if capacity remains.",
+            "functional": "Result is true iff size grows by one and the value is stored.",
+            "operational": "A conditional updates array and size or leaves state unchanged.",
+            "verification": "Frame condition: only values[size] and size change on success.",
+            "strata_core": "StackArrayCounter_push"
           }
         },
         {
-          "name": "valueAfterSteps",
-          "signature": "int valueAfterSteps(int start, int maxSteps)",
+          "name": "sum",
+          "signature": "int sum()",
           "layers": {
-            "surface": "Return the Collatz value after bounded fuel or after reaching one.",
-            "functional": "For maxSteps >= 0, result = iter(start, k) where k is min(maxSteps, first step reaching one).",
-            "operational": "A bounded for loop updates value with nextNumber unless value is already one.",
-            "verification": "Invariant: current value is the iterated transition from start for the number of completed steps.",
-            "strata_core": "BoundedCollatz_valueAfterSteps"
+            "surface": "Sum stack contents up to size.",
+            "functional": "Result is the sum of values[0..size-1].",
+            "operational": "A bounded loop accumulates stored values.",
+            "verification": "Invariant: total is sum of scanned stack prefix.",
+            "strata_core": "StackArrayCounter_sum"
+          }
+        },
+        {
+          "name": "size",
+          "signature": "int size()",
+          "layers": {
+            "surface": "Return the current stack size.",
+            "functional": "Result equals the private size field.",
+            "operational": "Single return step.",
+            "verification": "Postcondition exposes the size field.",
+            "strata_core": "StackArrayCounter_size"
+          }
+        },
+        {
+          "name": "demo",
+          "signature": "int demo()",
+          "layers": {
+            "surface": "Run a fixed stack sequence.",
+            "functional": "Result is 14 for pushes 5 and 7 plus size 2.",
+            "operational": "Allocates a stack, pushes two values, then calls sum and size.",
+            "verification": "Postcondition reuses push, sum, and size summaries.",
+            "strata_core": "StackArrayCounter_demo"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StarTriangleBounded.java",
+      "class": "StarTriangleBounded",
+      "program_semantics": "Nested bounded loops build a simple textual triangle. The first formal layer tracks lengths and cell counts before full string content.",
+      "methods": [
+        {
+          "name": "lineOfStars",
+          "signature": "String lineOfStars(int width)",
+          "layers": {
+            "surface": "Build one line containing width stars.",
+            "functional": "For width >= 0, result length is width and every character is '*'.",
+            "operational": "A bounded for loop appends one star per iteration.",
+            "verification": "Loop invariant after i iterations: builder length = i and all produced characters are stars.",
+            "strata_core": "StarTriangleBounded_lineOfStars_len"
+          }
+        },
+        {
+          "name": "triangle",
+          "signature": "String triangle(int height)",
+          "layers": {
+            "surface": "Build a newline-separated triangle with row widths 1 through height.",
+            "functional": "For height >= 0, result has height rows and row r has r stars.",
+            "operational": "Outer loop calls lineOfStars(row), then appends a newline except after the final row.",
+            "verification": "Outer invariant: completed prefix contains exactly rows 1..row-1.",
+            "strata_core": "StarTriangleBounded_triangle_rows"
+          }
+        },
+        {
+          "name": "triangleAreaCells",
+          "signature": "int triangleAreaCells(int height)",
+          "layers": {
+            "surface": "Count the number of star cells in a triangle.",
+            "functional": "For height >= 0, result = height * (height + 1) / 2.",
+            "operational": "A bounded for loop accumulates the current row number.",
+            "verification": "Loop invariant after row i: cells = i * (i + 1) / 2.",
+            "strata_core": "StarTriangleBounded_triangleAreaCells"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringFirstDifference.java",
+      "class": "StringFirstDifference",
+      "program_semantics": "CS61B-style sample for first differing character position. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "firstDifference",
+          "signature": "int firstDifference(String left, String right)",
+          "layers": {
+            "surface": "Find the first differing index.",
+            "functional": "Result is the least index where characters differ, or -1 if none in the scanned length.",
+            "operational": "A bounded loop records the first mismatch.",
+            "verification": "Invariant: found is -1 or the first mismatch in the scanned prefix.",
+            "strata_core": "StringFirstDifference_firstDifference"
+          }
+        },
+        {
+          "name": "samePrefix",
+          "signature": "boolean samePrefix(String left, String right)",
+          "layers": {
+            "surface": "Check whether no difference was found.",
+            "functional": "Result is true iff firstDifference returns -1.",
+            "operational": "Calls firstDifference and compares.",
+            "verification": "Postcondition reuses firstDifference summary.",
+            "strata_core": "StringFirstDifference_samePrefix"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringIsPalindrome.java",
+      "class": "StringIsPalindrome",
+      "program_semantics": "CS61B-style sample for palindrome checking by mirrored indices. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isPalindrome",
+          "signature": "boolean isPalindrome(String text)",
+          "layers": {
+            "surface": "Check mirrored character equality.",
+            "functional": "Result is true iff every position equals its mirror.",
+            "operational": "A bounded loop clears ok on a mismatch.",
+            "verification": "Invariant: ok means all scanned mirrored pairs match.",
+            "strata_core": "StringIsPalindrome_isPalindrome"
+          }
+        },
+        {
+          "name": "palindromeScore",
+          "signature": "int palindromeScore(String text)",
+          "layers": {
+            "surface": "Score palindromes by length.",
+            "functional": "Result is length iff isPalindrome is true, otherwise zero.",
+            "operational": "Branches on isPalindrome.",
+            "verification": "Postcondition reuses isPalindrome summary.",
+            "strata_core": "StringIsPalindrome_palindromeScore"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringMirror.java",
+      "class": "StringMirror",
+      "program_semantics": "CS61B-style sample for mirroring a string around itself. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "reverse",
+          "signature": "String reverse(String text)",
+          "layers": {
+            "surface": "Return characters in reverse order.",
+            "functional": "For length n, result[i] = text[n - i - 1].",
+            "operational": "A bounded descending for loop appends characters.",
+            "verification": "Invariant: output prefix matches reversed input suffix.",
+            "strata_core": "StringMirror_reverse"
+          }
+        },
+        {
+          "name": "mirror",
+          "signature": "String mirror(String text)",
+          "layers": {
+            "surface": "Append the reverse of text to text.",
+            "functional": "Result is text concatenated with reverse(text).",
+            "operational": "Calls reverse and concatenates.",
+            "verification": "Postcondition reuses reverse summary.",
+            "strata_core": "StringMirror_mirror"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringRemoveSpaces.java",
+      "class": "StringRemoveSpaces",
+      "program_semantics": "CS61B-style sample for removing spaces from a string. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "removeSpaces",
+          "signature": "String removeSpaces(String text)",
+          "layers": {
+            "surface": "Drop space characters.",
+            "functional": "Result is the subsequence of non-space input characters.",
+            "operational": "A bounded loop appends only non-space characters.",
+            "verification": "Invariant: output prefix is the non-space projection of the scanned prefix.",
+            "strata_core": "StringRemoveSpaces_removeSpaces"
+          }
+        },
+        {
+          "name": "compactLength",
+          "signature": "int compactLength(String text)",
+          "layers": {
+            "surface": "Return the length after removing spaces.",
+            "functional": "Result is the count of non-space input characters.",
+            "operational": "Calls removeSpaces and reads length.",
+            "verification": "Postcondition reuses removeSpaces shape.",
+            "strata_core": "StringRemoveSpaces_compactLength"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringRepeatEach.java",
+      "class": "StringRepeatEach",
+      "program_semantics": "CS61B-style sample for repeating every character a fixed number of times. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "repeatEach",
+          "signature": "String repeatEach(String text, int times)",
+          "layers": {
+            "surface": "Repeat each character times times.",
+            "functional": "For times >= 0, result length is text.length() * times.",
+            "operational": "Nested bounded loops append repetitions.",
+            "verification": "Invariant: output contains completed repeated character blocks.",
+            "strata_core": "StringRepeatEach_repeatEach"
+          }
+        },
+        {
+          "name": "repeatedLength",
+          "signature": "int repeatedLength(String text, int times)",
+          "layers": {
+            "surface": "Return repeatEach output length.",
+            "functional": "Result is text.length() * times for times >= 0.",
+            "operational": "Calls repeatEach and reads length.",
+            "verification": "Postcondition reuses repeatEach length summary.",
+            "strata_core": "StringRepeatEach_repeatedLength"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringRunCount.java",
+      "class": "StringRunCount",
+      "program_semantics": "CS61B-style sample for counting runs of equal adjacent characters. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "runCount",
+          "signature": "int runCount(String text)",
+          "layers": {
+            "surface": "Count maximal equal-character runs.",
+            "functional": "Result is one plus the number of adjacent changes for nonempty text.",
+            "operational": "A bounded loop increments at run starts.",
+            "verification": "Invariant: runs counts run starts in the scanned prefix.",
+            "strata_core": "StringRunCount_runCount"
+          }
+        },
+        {
+          "name": "hasOneRun",
+          "signature": "boolean hasOneRun(String text)",
+          "layers": {
+            "surface": "Check whether text has exactly one run.",
+            "functional": "Result is true iff runCount(text) is one.",
+            "operational": "Calls runCount and compares.",
+            "verification": "Postcondition reuses runCount summary.",
+            "strata_core": "StringRunCount_hasOneRun"
+          }
+        }
+      ]
+    },
+    {
+      "source_file": "corpus/cs61b-java/src/StringVowelCount.java",
+      "class": "StringVowelCount",
+      "program_semantics": "CS61B-style sample for counting vowels in a string. The chain keeps source, surface intent, functional relation, operational loop/call story, verification obligation, and Strata target aligned.",
+      "methods": [
+        {
+          "name": "isVowel",
+          "signature": "boolean isVowel(char c)",
+          "layers": {
+            "surface": "Classify lowercase vowels.",
+            "functional": "Result is true iff c is one of a,e,i,o,u.",
+            "operational": "Boolean expression return.",
+            "verification": "Postcondition enumerates the vowel cases.",
+            "strata_core": "StringVowelCount_isVowel"
+          }
+        },
+        {
+          "name": "countVowels",
+          "signature": "int countVowels(String text)",
+          "layers": {
+            "surface": "Count vowels in text.",
+            "functional": "Result is the number of character positions classified as vowels.",
+            "operational": "A bounded loop calls isVowel.",
+            "verification": "Invariant: count is vowels in the scanned prefix.",
+            "strata_core": "StringVowelCount_countVowels"
           }
         }
       ]

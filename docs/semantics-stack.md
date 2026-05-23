@@ -67,17 +67,27 @@ turn that claim into a theorem that another method proof consumes.
 
 This is the distinctive claim for the project.
 
+The current Core sketch starts this reuse concretely for the original 10
+programs: each has stronger pre/postconditions inferred from code comments,
+method bodies, and direct reading, plus a derived procedure that stacks one
+extra property on top of those contracts. The 40 expansion programs currently
+remain lightweight procedure/spec anchors until they receive the same review.
+
 ## How To Read The Artifacts
 
 - [semantics/cs61b-java/stack-semantics.json](/Users/alokbeniwal/StrataJava/semantics/cs61b-java/stack-semantics.json) is the
-  machine-readable index of semantic cards for all 10 programs, including the
+  machine-readable index of semantic cards for all 50 programs, including the
   required chain links.
 - [semantics/strata-core/cs61b-java/CoreSketch.core.st](/Users/alokbeniwal/StrataJava/semantics/strata-core/cs61b-java/CoreSketch.core.st) is a first
   Strata Core/Boogie-like target sketch. It is intentionally a semantic sketch,
-  not a promised complete Java frontend.
+  not a promised complete Java frontend, but it is now checked against the
+  current Strata `strata verify` command.
 - [scripts/check-semantics.py](/Users/alokbeniwal/StrataJava/scripts/check-semantics.py) validates that every corpus source file has a semantic
   card, every semantic card has the required stack layers, and every listed
   Strata procedure name appears in the Core sketch.
+- [scripts/check-strata-core.sh](/Users/alokbeniwal/StrataJava/scripts/check-strata-core.sh) builds a Strata checkout, parses the Core sketch,
+  type-checks it, generates verification conditions, and runs an SMT pass when
+  a solver is available.
 
 ## Current Scope
 
@@ -109,3 +119,9 @@ The chain should support theorem-like reuse:
   uses both to state the spread relation.
 - `TinyUnionFind.union` establishes a relation-level connectivity update;
   `demoScore` uses the union summaries to justify the fixed result.
+- `ArrayCopy.copy` establishes length-preserving element copy semantics;
+  `SelectionSortCopy.sortedCopy` stacks sortedness and permutation obligations
+  on top of that copy fact.
+- `ArrayCountTarget.countTarget` establishes target multiplicity;
+  `ArrayReplaceTarget.replace` reuses that count as the number of modified
+  positions.

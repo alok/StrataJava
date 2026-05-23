@@ -11,6 +11,7 @@ CORPUS = ROOT / "metadata" / "corpus.json"
 SEMANTICS = ROOT / "semantics" / "cs61b-java" / "stack-semantics.json"
 CORE_SKETCH = ROOT / "semantics" / "strata-core" / "cs61b-java" / "CoreSketch.core.st"
 
+EXPECTED_PROGRAMS = 50
 REQUIRED_LAYERS = {"surface", "functional", "operational", "verification", "strata_core"}
 REQUIRED_CHAIN = [
     ("C0.source_to_surface", "L0.source", "L1.surface"),
@@ -36,6 +37,18 @@ def java_sources_from_corpus() -> set[str]:
     if not isinstance(programs, list):
         raise TypeError("metadata/corpus.json must contain a programs list")
     sources = {program["file"] for program in programs}
+    if len(sources) != EXPECTED_PROGRAMS:
+        raise ValueError(f"expected {EXPECTED_PROGRAMS} corpus programs, got {len(sources)}")
+
+    actual_sources = {
+        str(path.relative_to(ROOT))
+        for path in (ROOT / "corpus" / "cs61b-java" / "src").glob("*.java")
+    }
+    if actual_sources != sources:
+        missing = sorted(sources - actual_sources)
+        extra = sorted(actual_sources - sources)
+        raise ValueError(f"metadata/source mismatch missing={missing} extra={extra}")
+
     for source in sources:
         source_path = ROOT / source
         if not source_path.exists():
