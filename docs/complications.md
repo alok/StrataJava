@@ -114,3 +114,9 @@ first StrataJava corpus.
   before their bodies can honestly be replaced. The generated expansion
   procedures also still use lightweight `assume true` anchors; those stress
   parser/typechecker/VC scale, but they are not semantic proofs yet.
+- Remote `main` advanced to `5f22696` while the executable-semantics pass was
+  local; `git pull --rebase origin main` replayed the pass cleanly. The Java
+  comment pass then added class-level comments from the recorded Berkeley CS61B
+  source probes and method comments from the existing semantic cards/direct code
+  reading. These comments are intent annotations only; they do not make the
+  Java code itself a proof artifact.

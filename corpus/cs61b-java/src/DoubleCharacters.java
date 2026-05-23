@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-fa25 hw02/src/DoubleUp.java.
+ * Focus: string traversal with repeated output.
+ */
 public class DoubleCharacters {
+    /**
+     * CS61B-style intent: Repeat every character twice.
+     * Semantic target: For input length n, output length is 2*n and positions 2*i and 2*i+1 both equal text[i].
+     */
     public static String doubleUp(String text) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < text.length(); i += 1) {
@@ -9,10 +17,18 @@ public class DoubleCharacters {
         return builder.toString();
     }
 
+    /**
+     * CS61B-style intent: Return the length of doubleUp(text).
+     * Semantic target: For input length n >= 0, result = 2*n.
+     */
     public static int doubledLength(String text) {
         return doubleUp(text).length();
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         System.out.println(doubleUp("hello"));
         System.out.println(doubledLength("strata"));

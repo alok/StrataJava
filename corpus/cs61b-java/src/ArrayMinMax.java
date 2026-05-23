@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-fa25 hw03/src/ArrayExercises.java.
+ * Focus: array scan for minimum and maximum.
+ */
 public class ArrayMinMax {
+    /**
+     * CS61B-style intent: Return the minimum item in a nonempty array.
+     * Semantic target: result is an element of items and every array element is >= result.
+     */
     public static int minValue(int[] items) {
         int best = items[0];
         for (int i = 1; i < items.length; i += 1) {
@@ -9,6 +17,10 @@ public class ArrayMinMax {
         return best;
     }
 
+    /**
+     * CS61B-style intent: Return the maximum item in a nonempty array.
+     * Semantic target: result is an element of items and every array element is <= result.
+     */
     public static int maxValue(int[] items) {
         int best = items[0];
         for (int i = 1; i < items.length; i += 1) {
@@ -19,10 +31,18 @@ public class ArrayMinMax {
         return best;
     }
 
+    /**
+     * CS61B-style intent: Return the spread between maximum and minimum.
+     * Semantic target: result = max(items) - min(items).
+     */
     public static int minMaxDifference(int[] items) {
         return maxValue(items) - minValue(items);
     }
 
+    /**
+     * CS61B-style intent: Return the second largest value among exactly the first four items.
+     * Semantic target: result is the largest value after removing one occurrence of the maximum from items[0..3].
+     */
     public static int secondLargestOfFour(int[] items) {
         int largest = items[0];
         int second = items[1];
@@ -42,6 +62,10 @@ public class ArrayMinMax {
         return second;
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         int[] data = new int[] {7, 2, 9, 4};
         System.out.println(minMaxDifference(data));

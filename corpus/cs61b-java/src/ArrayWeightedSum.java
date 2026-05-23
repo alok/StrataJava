@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-fa25 hw03/src/ArrayExercises.java.
+ * Focus: weighted index sum over an integer array.
+ */
 public class ArrayWeightedSum {
+    /**
+     * CS61B-style intent: Multiply each value by its one-based index and sum.
+     * Semantic target: Result is sum(items[i] * (i + 1)).
+     */
     public static int weightedSum(int[] items) {
         int total = 0;
         for (int i = 0; i < items.length; i += 1) {
@@ -7,10 +15,18 @@ public class ArrayWeightedSum {
         return total;
     }
 
+    /**
+     * CS61B-style intent: Compare two weighted sums.
+     * Semantic target: Result is weightedSum(left) - weightedSum(right).
+     */
     public static int weightedDifference(int[] left, int[] right) {
         return weightedSum(left) - weightedSum(right);
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         int[] left = new int[] {1, 2, 3};
         int[] right = new int[] {1, 1, 1};

@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-fa25 hw03/src/ArrayExercises.java.
+ * Focus: reversing an array into a new output.
+ */
 public class ArrayReverseCopy {
+    /**
+     * CS61B-style intent: Return a reversed copy of the input.
+     * Semantic target: For every index i, result[i] = items[length - i - 1].
+     */
     public static int[] reverseCopy(int[] items) {
         int[] result = new int[items.length];
         for (int i = 0; i < items.length; i += 1) {
@@ -7,10 +15,18 @@ public class ArrayReverseCopy {
         return result;
     }
 
+    /**
+     * CS61B-style intent: Read the first item of the reversed copy.
+     * Semantic target: For nonempty input, result is the last input element.
+     */
     public static int firstAfterReverse(int[] items) {
         return reverseCopy(items)[0];
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         int[] data = new int[] {2, 4, 6};
         System.out.println(reverseCopy(data)[0]);

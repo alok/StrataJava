@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-sp21/lab2/IntList/Primes.java.
+ * Focus: greatest common divisor by bounded scan.
+ */
 public class NumberGcdByScan {
+    /**
+     * CS61B-style intent: Find the greatest common divisor by scanning candidates.
+     * Semantic target: Result is the largest d <= min(a,b) dividing both inputs.
+     */
     public static int gcdByScan(int a, int b) {
         int limit = a;
         if (b < limit) {
@@ -13,10 +21,18 @@ public class NumberGcdByScan {
         return best;
     }
 
+    /**
+     * CS61B-style intent: Check whether gcd is one.
+     * Semantic target: Result is true iff gcdByScan(a,b) == 1.
+     */
     public static boolean relativelyPrime(int a, int b) {
         return gcdByScan(a, b) == 1;
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         System.out.println(gcdByScan(12, 18));
         System.out.println(relativelyPrime(8, 15));

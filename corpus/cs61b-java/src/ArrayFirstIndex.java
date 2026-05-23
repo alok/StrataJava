@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-sp21/lab3/randomizedtest/AListNoResizing.java.
+ * Focus: linear search for first index.
+ */
 public class ArrayFirstIndex {
+    /**
+     * CS61B-style intent: Find the first target index or -1.
+     * Semantic target: Result is the least matching index, or -1 if none exists.
+     */
     public static int firstIndexOf(int[] items, int target) {
         int found = -1;
         for (int i = 0; i < items.length; i += 1) {
@@ -9,10 +17,18 @@ public class ArrayFirstIndex {
         return found;
     }
 
+    /**
+     * CS61B-style intent: Check membership using firstIndexOf.
+     * Semantic target: Result is true iff firstIndexOf returns a nonnegative index.
+     */
     public static boolean contains(int[] items, int target) {
         return firstIndexOf(items, target) >= 0;
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         int[] data = new int[] {4, 1, 4};
         System.out.println(firstIndexOf(data, 4));

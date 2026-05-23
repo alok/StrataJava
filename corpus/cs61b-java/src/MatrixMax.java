@@ -1,4 +1,12 @@
+/**
+ * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-sp24/proj3/src/core/World.java.
+ * Focus: maximum value in a matrix.
+ */
 public class MatrixMax {
+    /**
+     * CS61B-style intent: Find the maximum matrix value.
+     * Semantic target: Result is an entry greater than or equal to every entry.
+     */
     public static int max(int[][] matrix) {
         int best = matrix[0][0];
         for (int row = 0; row < matrix.length; row += 1) {
@@ -11,10 +19,18 @@ public class MatrixMax {
         return best;
     }
 
+    /**
+     * CS61B-style intent: Check whether the first cell is maximal.
+     * Semantic target: Result is true iff matrix[0][0] equals max(matrix).
+     */
     public static boolean firstIsMax(int[][] matrix) {
         return matrix[0][0] == max(matrix);
     }
 
+    /**
+     * CS61B-style intent: Run a small smoke example for this class.
+     * Semantic target: exercise representative calls without changing corpus semantics.
+     */
     public static void main(String[] args) {
         int[][] matrix = new int[][] {{1, 9}, {3, 4}};
         System.out.println(max(matrix));
