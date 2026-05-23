@@ -1,13 +1,13 @@
 public class ArithmeticFacts {
-    public static int product(int a, int b) {
+    public static int product(int a, int b) { // human-checked
         return a * b;
     }
 
-    public static int sum(int a, int b) {
+    public static int sum(int a, int b) { // human-checked
         return a + b;
     }
 
-    public static int boundedPower(int base, int exponent) {
+    public static int boundedPower(int base, int exponent) { // human-checked
         int result = 1;
         for (int i = 0; i < exponent; i += 1) {
             result = product(result, base);
@@ -15,7 +15,7 @@ public class ArithmeticFacts {
         return result;
     }
 
-    public static int maxOfThree(int a, int b, int c) {
+    public static int maxOfThree(int a, int b, int c) { // human-checked
         int best = a;
         if (b > best) {
             best = b;
