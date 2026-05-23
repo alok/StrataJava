@@ -126,7 +126,7 @@ first StrataJava corpus.
   source snippet with line numbers next to its stdout, source probe, and topic.
   `check-all.sh` runs the same test in quiet mode so accidental runtime
   breakage still fails the normal check without flooding the terminal.
-- A honesty pass removed public methods that were mostly synthetic score,
+- An honesty pass removed public methods that were mostly synthetic score,
   bonus, penalty, or fixed-demo wrappers rather than source-backed corpus
   behavior: `ArithmeticFacts.score`, `ArrayAllPositive.positiveBonus`,
   `ArrayAnyNegative.negativePenalty`, `ArrayIsSorted.sortedScore`,
