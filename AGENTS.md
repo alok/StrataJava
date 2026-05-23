@@ -51,6 +51,9 @@ checkout must be treated as required.
 
 Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by convention, not tooling):
 
+- Preserve human review markers and comments in corpus files, especially inline
+  `// human-checked` markers. Do not remove, rewrite, or regenerate them unless
+  Alok explicitly asks for that specific change.
 - No `throw`, `throws`, `try`, `catch`, or exception classes
 - No recursion
 - No third-party imports (stdlib only)
