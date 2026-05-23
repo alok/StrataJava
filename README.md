@@ -38,6 +38,12 @@ To stress the current Strata checkout against the generated Core target:
 STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
 ```
 
+The Lean/Strata/Boogie-facing path is also available directly:
+
+```bash
+STRATA_DIR=/path/to/Strata ./scripts/check-lean-strata-boogie.sh
+```
+
 If `STRATA_DIR` is omitted, the script first tries `/tmp/stratajava-Strata` and
 then `../Strata`. The check builds Strata's `strata` executable, parses the
 Core sketch, type-checks it, generates full-check verification conditions, and

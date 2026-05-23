@@ -88,6 +88,7 @@ remain lightweight procedure/spec anchors until they receive the same review.
 - [scripts/check-strata-core.sh](/Users/alokbeniwal/StrataJava/scripts/check-strata-core.sh) builds a Strata checkout, parses the Core sketch,
   type-checks it, generates verification conditions, and runs an SMT pass when
   a solver is available.
+- [lean/strata/boogie](/Users/alokbeniwal/StrataJava/lean/strata/boogie) is the stable Lean/Strata/Boogie-facing path for that same Core target.
 
 ## Current Scope
 

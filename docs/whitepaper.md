@@ -133,12 +133,14 @@ The current implementation has:
 - Chained semantics at `semantics/cs61b-java/stack-semantics.json`.
 - A Strata Core sketch at
   `semantics/strata-core/cs61b-java/CoreSketch.core.st`.
+- A Lean/Strata/Boogie-facing build path at `lean/strata/boogie`.
 - A semantics-chain explainer at `docs/semantics-stack.md`.
 - A running complications log at `docs/complications.md`.
 - Validation scripts:
   - `scripts/check-java-corpus.sh`
   - `scripts/check-semantics.py`
   - `scripts/check-strata-core.sh`
+  - `scripts/check-lean-strata-boogie.sh`
   - `scripts/check-all.sh`
 
 The validation checks that every Java file has semantics, every method has the

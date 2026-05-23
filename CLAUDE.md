@@ -17,6 +17,9 @@ StrataJava is a small Java corpus for exercising [`strata-org/Strata`](https://r
 
 # Stress the Strata Core target against a Strata checkout
 STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
+
+# Stress the Lean/Strata/Boogie-facing path
+STRATA_DIR=/path/to/Strata ./scripts/check-lean-strata-boogie.sh
 ```
 
 This compiles every `.java` file under `corpus/cs61b-java/src/` into `build/classes/cs61b-java/`. The script uses `fd` (not `find`), so `fd` must be installed.
@@ -46,12 +49,14 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `metadata/corpus.json` — source of truth: maps each file to its topic, CS 61B source probe (the Berkeley skeleton file that motivated it), and language features used
 - `semantics/cs61b-java/stack-semantics.json` — machine-readable chained semantics for every corpus method
 - `semantics/strata-core/cs61b-java/CoreSketch.core.st` — Strata Core / Boogie-like semantic target sketch
+- `lean/strata/boogie/` — Lean/Strata/Boogie-facing build path for the same Core target
 - `docs/semantics-stack.md` — explanation of the L0 -> L1 -> L2 -> L3 -> L4 -> L5 semantic chain
 - `docs/whitepaper.md` — living project white paper; keep this current when project framing, goals, or evidence changes
 - `docs/complications.md` — running log of constraints and decisions made while building the corpus
 - `scripts/check-java-corpus.sh` — compile-check script
 - `scripts/check-semantics.py` — semantic-chain validator
 - `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
+- `scripts/check-lean-strata-boogie.sh` — stress harness for `lean/strata/boogie/CoreSketch.core.st`
 - `scripts/check-all.sh` — combined check script
 
 ## Adding New Corpus Files

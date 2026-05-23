@@ -13,7 +13,7 @@ if [[ $# -ne 0 ]]; then
 fi
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-core_file="$repo_root/semantics/strata-core/cs61b-java/CoreSketch.core.st"
+core_file="${CORE_FILE:-$repo_root/semantics/strata-core/cs61b-java/CoreSketch.core.st}"
 
 strata_dir="${STRATA_DIR:-}"
 if [[ -z "$strata_dir" ]]; then

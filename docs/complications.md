@@ -91,3 +91,10 @@ first StrataJava corpus.
   procedure contracts, and a derived "stacked property" procedure per original
   program. The 40 generated expansion programs remain lightweight targets until
   their semantics are reviewed with the same level of care.
+- The Lean/Strata/Boogie-facing path now lives at `lean/strata/boogie`. It is
+  wired to the same Core sketch as the L5 semantics target so the project does
+  not maintain two divergent Boogie/Core files.
+- `./scripts/check-lean-strata-boogie.sh` passed against `/tmp/stratajava-Strata`:
+  Strata built, the Core file parsed and typechecked, 202 SMT-LIB verification
+  conditions were generated, and `z3` discharged all 202. No Lean/Strata/Boogie
+  build failure needed logging beyond the no-solve abstract-obligation summary.
