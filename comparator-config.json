@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ArithmeticFacts.product_summary",
+    "ArithmeticFacts.product_commutes",
+    "ArithmeticFacts.sum_summary",
+    "ArithmeticFacts.sum_commutes",
+    "ArithmeticFacts.product_distrib_over_sum"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": false
+}

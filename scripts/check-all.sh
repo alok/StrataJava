@@ -6,3 +6,4 @@ uv run scripts/check-semantics.py
 uv run scripts/check-main-output.py --quiet --no-compile
 ./scripts/check-human-checked-lint.sh
 ./scripts/check-lake.sh
+./scripts/check-comparator.sh

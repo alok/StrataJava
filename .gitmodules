@@ -1,0 +1,4 @@
+[submodule "vendor/Strata"]
+	path = vendor/Strata
+	url = https://github.com/natkozak/Strata.git
+	branch = strata-java-4.30-compat
