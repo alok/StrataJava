@@ -38,9 +38,9 @@ if [[ "$vc_status" -ne 0 && "$vc_status" -ne 2 ]]; then
   exit "$vc_status"
 fi
 
-smt_count="$(fd -e smt2 . "$vc_dir" | wc -l | tr -d ' ')"
+smt_count="$(find "$vc_dir" -type f -name '*.smt2' | wc -l | tr -d ' ')"
 echo "Generated $smt_count SMT-LIB verification condition files in $vc_dir"
-vc_summary="$(rg "All [0-9]+ goals passed|Finished with" "$vc_log" | tail -1 || true)"
+vc_summary="$(grep -E "All [0-9]+ goals passed|Finished with" "$vc_log" | tail -1 || true)"
 if [[ -n "$vc_summary" ]]; then
   echo "No-solve summary: $vc_summary"
 fi
@@ -70,7 +70,7 @@ lake exe stratajava \
 solve_status=$?
 set -e
 
-solve_summary="$(rg "All [0-9]+ goals passed|Finished with" "$solve_log" | tail -1 || true)"
+solve_summary="$(grep -E "All [0-9]+ goals passed|Finished with" "$solve_log" | tail -1 || true)"
 if [[ "$solve_status" -eq 0 ]]; then
   if [[ -n "$solve_summary" ]]; then
     echo "Solver summary: $solve_summary"

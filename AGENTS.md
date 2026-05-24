@@ -4,12 +4,17 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Purpose
 
-StrataJava is a small Java corpus for exercising [`strata-org/Strata`](https://reservoir.lean-lang.org/@strata-org/Strata) on CS 61B-style programs. The corpus intentionally stays within a narrow subset of Java so Strata's analysis remains tractable.
+StrataJava is a tiny Java corpus for exercising
+[`strata-org/Strata`](https://reservoir.lean-lang.org/@strata-org/Strata) on a
+CS 61B-style example. The corpus is intentionally scoped to a single
+`ArithmeticFacts` class with two operations — `product` and `sum` — so the
+pipeline can prove their commutativity and the stacked distributivity theorem
+`product(a, sum(b, c)) == sum(product(a, b), product(a, c))` end-to-end.
 
 ## Build & Check
 
 ```bash
-# Compile all corpus files (requires fd and javac)
+# Compile the corpus class
 ./scripts/check-java-corpus.sh
 
 # Compile corpus and validate semantic-chain artifacts (requires uv)
@@ -30,29 +35,13 @@ lake exe stratajava
 # Build with Lake and stress the Strata Core target
 ./scripts/check-lake.sh
 
-# Print each Java main method beside its stdout for easy comparison
+# Print the Java main method beside its stdout for easy comparison
 uv run scripts/check-main-output.py
-
-# Stress the Strata Core target against a Strata checkout
-STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
-
-# Stress the Lean/Strata/Boogie-facing path
-STRATA_DIR=/path/to/Strata ./scripts/check-lean-strata-boogie.sh
-```
-
-This compiles every `.java` file under `corpus/cs61b-java/src/` into `build/classes/cs61b-java/`. The script uses `fd` (not `find`), so `fd` must be installed.
-
-To run a single compiled class:
-```bash
-java -cp build/classes/cs61b-java <ClassName>
 ```
 
 `check-all.sh` runs the Java compile check, `uv run scripts/check-semantics.py`,
-the main-method smoke outputs in quiet mode, the Lean `human_checked_lint`
-warning pass, the Lake-native Strata check, and the older external-checkout
-Strata Core stress check when a Strata checkout is available. Run
-`scripts/check-strata-core.sh` directly when an external Strata checkout must be
-treated as required.
+the main-method smoke output in quiet mode, the Lean `human_checked_lint`
+warning pass, and the Lake-native Strata check.
 
 For as-you-go guidance, set this repo's local Git hook path once with
 `git config core.hooksPath scripts/hooks`. The versioned pre-commit hook runs
@@ -61,11 +50,12 @@ warnings without turning missing review comments into build errors.
 
 ## Corpus Constraints
 
-Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by convention, not tooling):
+The single corpus file in `corpus/cs61b-java/src/` must obey these rules
+(enforced by convention, not tooling):
 
-- Preserve human review markers and comments in corpus files, especially inline
-  `// human-checked` markers. Do not remove, rewrite, or regenerate them unless
-  Alok explicitly asks for that specific change.
+- Preserve human review markers and comments in the corpus file, especially
+  inline `// human-checked` markers. Do not remove, rewrite, or regenerate them
+  unless Alok explicitly asks for that specific change.
 - No `throw`, `throws`, `try`, `catch`, or exception classes
 - No recursion
 - No third-party imports (stdlib only)
@@ -74,22 +64,29 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 
 ## Structure
 
-- `corpus/cs61b-java/src/` — the 50 standalone Java source files
+- `corpus/cs61b-java/src/ArithmeticFacts.java` — the single corpus source
 - `lakefile.toml` / `lean-toolchain` — Lake project using Strata as the pinned
   core dependency
 - `StrataJava.lean` and `StrataJava/Main.lean` — Lean wrapper and executable
   that drive Strata over the corpus Core sketch
+- `StrataJava/ArithmeticFacts.lean` — Lean translation with the
+  product/sum/commutativity/distributivity theorems
 - `StrataJava/HumanCheckedLint.lean` — Lean warning linter for public corpus
   functions missing nearby `human-checked` comments
-- `metadata/corpus.json` — source of truth: maps each file to its topic, CS 61B source probe (the Berkeley skeleton file that motivated it), and language features used
-- `semantics/cs61b-java/stack-semantics.json` — machine-readable chained semantics for every corpus method
-- `semantics/strata-core/cs61b-java/CoreSketch.core.st` — Strata Core / Boogie-like semantic target sketch
-- `lean/strata/boogie/` — Lean/Strata/Boogie-facing build path for the same Core target
-- `docs/semantics-stack.md` — explanation of the L0 -> L1 -> L2 -> L3 -> L4 -> L5 semantic chain
-- `docs/whitepaper.md` — living project white paper; keep this current when project framing, goals, or evidence changes
-- `docs/complications.md` — running log of constraints and decisions made while building the corpus
+- `metadata/corpus.json` — source of truth: maps the file to its topic, CS 61B
+  source probe, and language features used
+- `semantics/cs61b-java/stack-semantics.json` — machine-readable chained
+  semantics for every corpus method
+- `lean/strata/boogie/CoreSketch.core.st` — Strata Core / Boogie-like
+  procedure/spec target
+- `docs/semantics-stack.md` — explanation of the L0 -> L1 -> L2 -> L3 -> L4 ->
+  L5 semantic chain
+- `docs/whitepaper.md` — living project white paper; keep this current when
+  project framing, goals, or evidence changes
+- `docs/complications.md` — running log of constraints and decisions made while
+  building the corpus
 - `scripts/check-java-corpus.sh` — compile-check script
-- `scripts/check-main-output.py` — runs every Java `main` method and can print
+- `scripts/check-main-output.py` — runs the Java `main` method and can print
   the source snippet next to stdout for inspection
 - `scripts/check-semantics.py` — semantic-chain validator
 - `scripts/check-human-checked-lint.sh` — minimal wrapper for the Lean
@@ -97,21 +94,23 @@ Every file in `corpus/cs61b-java/src/` must obey these rules (enforced by conven
 - `scripts/check-lake.sh` — Lake-native Strata build/load/VC stress harness
 - `scripts/hooks/pre-commit` — versioned hook that runs the human-checked
   warning linter only on staged Java corpus files when `core.hooksPath` is set
-- `scripts/check-strata-core.sh` — Strata parse/typecheck/VC stress harness
-- `scripts/check-lean-strata-boogie.sh` — stress harness for `lean/strata/boogie/CoreSketch.core.st`
 - `scripts/check-all.sh` — combined check script
 
 ## Adding New Corpus Files
 
-1. Write the `.java` file into `corpus/cs61b-java/src/` respecting all constraints above.
-2. Add a corresponding entry to `metadata/corpus.json` with `file`, `topic`, `source_probe`, and `features` fields.
-3. Add or update semantic cards in `semantics/cs61b-java/stack-semantics.json`.
-4. Add any new Strata target procedure names to `semantics/strata-core/cs61b-java/CoreSketch.core.st`.
-5. Run `./scripts/check-all.sh` to verify the Java, semantics, and available
-   Strata artifacts.
-6. Run `./scripts/check-strata-core.sh` with `STRATA_DIR` set when Strata must
-   be treated as a hard dependency.
-7. If the class has a `main` method, run it and confirm it exits successfully.
+The corpus is intentionally focused on `ArithmeticFacts`. If you re-expand it:
+
+1. Write the `.java` file into `corpus/cs61b-java/src/` respecting all
+   constraints above.
+2. Add a corresponding entry to `metadata/corpus.json` with `file`, `topic`,
+   `source_probe`, and `features` fields.
+3. Add or update semantic cards in
+   `semantics/cs61b-java/stack-semantics.json`.
+4. Add any new Strata target procedure names to
+   `lean/strata/boogie/CoreSketch.core.st`.
+5. Run `./scripts/check-all.sh` to verify the Java, semantics, and Strata
+   artifacts.
+6. If the class has a `main` method, run it and confirm it exits successfully.
 
 ## Semantic Chain
 
@@ -121,6 +120,8 @@ Every method should connect:
 `Java source -> surface summary -> functional relation -> operational story -> verification obligations -> Strata Core target`
 
 Lean/theorem provers can express semantic facts and then use them downstream as
-theorem inputs. Java and Python usually leave those facts in comments, human
-memory, or untrusted summaries. Keep that distinction explicit in docs and
-reports.
+theorem inputs. The `product_distrib_over_sum` theorem is the canonical
+demonstration: it consumes the `product_summary` and `sum_summary` facts from
+two different functions to discharge a derived obligation. Java and Python
+usually leave those facts in comments, human memory, or untrusted summaries.
+Keep that distinction explicit in docs and reports.

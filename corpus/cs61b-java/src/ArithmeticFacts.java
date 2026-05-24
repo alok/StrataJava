@@ -1,6 +1,8 @@
 /**
  * CS61B-style exercise inspired by Berkeley-CS61B/skeleton-fa25 hw01/src/Arithmetic.java.
- * Focus: integer arithmetic helpers and function calls.
+ * Focus: integer arithmetic helpers, stripped to the two operations we verify
+ * downstream — product and sum — so we can prove commutativity of each and
+ * distributivity of product over sum in Lean.
  */
 public class ArithmeticFacts {
     /**
@@ -20,38 +22,14 @@ public class ArithmeticFacts {
     }
 
     /**
-     * CS61B-style intent: Multiply by base exponent times.
-     * Semantic target: For exponent >= 0, result = base raised to exponent.
-     */
-    public static int boundedPower(int base, int exponent) { // human-checked
-        int result = 1;
-        for (int i = 0; i < exponent; i += 1) {
-            result = product(result, base);
-        }
-        return result;
-    }
-
-    /**
-     * CS61B-style intent: Return the largest of three integers.
-     * Semantic target: result is one of a, b, c and every input is <= result.
-     */
-    public static int maxOfThree(int a, int b, int c) { // human-checked
-        int best = a;
-        if (b > best) {
-            best = b;
-        }
-        if (c > best) {
-            best = c;
-        }
-        return best;
-    }
-
-    /**
      * Smoke-only harness: prints representative calls for comparison.
      * Not a semantic target; public methods above carry the checked intent.
      */
     public static void main(String[] args) {
-        System.out.println(maxOfThree(2, 3, 4));
-        System.out.println(boundedPower(3, 4));
+        System.out.println(product(3, 4));
+        System.out.println(sum(3, 4));
+        // Distributivity witness: a*(b+c) vs a*b + a*c.
+        System.out.println(product(2, sum(3, 4)));
+        System.out.println(sum(product(2, 3), product(2, 4)));
     }
 }

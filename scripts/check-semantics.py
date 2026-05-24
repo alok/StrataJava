@@ -9,9 +9,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "metadata" / "corpus.json"
 SEMANTICS = ROOT / "semantics" / "cs61b-java" / "stack-semantics.json"
-CORE_SKETCH = ROOT / "semantics" / "strata-core" / "cs61b-java" / "CoreSketch.core.st"
+CORE_SKETCH = ROOT / "lean" / "strata" / "boogie" / "CoreSketch.core.st"
 
-EXPECTED_PROGRAMS = 50
+EXPECTED_PROGRAMS = 1
 REQUIRED_LAYERS = {"surface", "functional", "operational", "verification", "strata_core"}
 REQUIRED_CHAIN = [
     ("C0.source_to_surface", "L0.source", "L1.surface"),
@@ -124,8 +124,8 @@ def validate_semantics(sources: set[str]) -> None:
             if f"procedure {procedure}" not in core_text:
                 raise ValueError(f"{procedure} is missing from {CORE_SKETCH}")
 
-    if total_methods < 30:
-        raise ValueError(f"expected a rich method semantics set, got {total_methods}")
+    if total_methods < 2:
+        raise ValueError(f"expected at least the product and sum method cards, got {total_methods}")
 
 
 def main() -> None:

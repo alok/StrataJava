@@ -1,54 +1,40 @@
 # StrataJava
 
-Small Java corpus for exercising [`strata-org/Strata`](https://reservoir.lean-lang.org/@strata-org/Strata)
-on CS 61B-style programs.
+Minimal Java corpus for exercising
+[`strata-org/Strata`](https://reservoir.lean-lang.org/@strata-org/Strata)
+on a CS 61B-style example.
 
-The corpus is intentionally conservative:
+The corpus is intentionally tiny: a single `ArithmeticFacts` class with the
+two operations we verify downstream — `product` and `sum`. The headline claim
+is the stacked theorem `product_distrib_over_sum`, which requires combining
+the spec of `product` with the spec of `sum`.
 
-- 50 standalone Java files.
-- No `throw`, `try`, `catch`, or checked/unchecked failure classes in the corpus
-  sources.
-- Bounded `for` loops over integers, arrays, or strings.
-- Plain `if` branches and ordinary function/method calls.
-- No recursion.
-- No third-party Java libraries.
+Corpus constraints:
 
-The files are original small programs, not verbatim copies of Berkeley source.
-The `metadata/corpus.json` file records the public CS 61B source probes that
-motivated each topic.
+- No `throw`, `try`, `catch`, or checked/unchecked failure classes.
+- No recursion or third-party Java libraries.
+- Bounded `for` loops; plain `if` branches and function calls.
 
 ## Check
 
 ```bash
-./scripts/check-java-corpus.sh
+./scripts/check-java-corpus.sh   # compile the corpus
+./scripts/check-all.sh           # full pipeline: javac + semantics + Lake/Strata
+lake build                       # Lean type-check + theorem verification
+lake exe stratajava              # run the Strata sketch via the Lake wrapper
 ```
 
-This compiles every file under `corpus/cs61b-java/src` into
-`build/classes/cs61b-java`.
+`check-all.sh` runs the Java compile check, the semantic-chain validator, the
+Java `main` smoke harness, the human-checked Java lint, and the Lake-native
+Strata check against `lean/strata/boogie/CoreSketch.core.st`.
 
-To validate the Java corpus and the attached semantics stack:
+## Layout
 
-```bash
-./scripts/check-all.sh
-```
-
-To stress the current Strata checkout against the generated Core target:
-
-```bash
-STRATA_DIR=/path/to/Strata ./scripts/check-strata-core.sh
-```
-
-The Lean/Strata/Boogie-facing path is also available directly:
-
-```bash
-STRATA_DIR=/path/to/Strata ./scripts/check-lean-strata-boogie.sh
-```
-
-If `STRATA_DIR` is omitted, the script first tries `/tmp/stratajava-Strata` and
-then `../Strata`. The check builds Strata's `strata` executable, parses the
-Core sketch, type-checks it, generates full-check verification conditions, and
-runs the available SMT solver (`cvc5` or `z3`) when present.
-
-The semantics artifacts live under `semantics/` and are described in
-`docs/semantics-stack.md`. The project white paper is kept at
-`docs/whitepaper.md`.
+- `corpus/cs61b-java/src/ArithmeticFacts.java` — the Java source.
+- `StrataJava/ArithmeticFacts.lean` — Lean translation with the commutativity
+  and distributivity theorems.
+- `lean/strata/boogie/CoreSketch.core.st` — Strata Core procedure/spec sketch.
+- `semantics/cs61b-java/stack-semantics.json` — semantic-chain index.
+- `metadata/corpus.json` — corpus manifest.
+- `docs/whitepaper.md`, `docs/semantics-stack.md`, `docs/complications.md` —
+  project documentation.
